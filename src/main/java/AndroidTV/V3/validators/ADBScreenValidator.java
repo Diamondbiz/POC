@@ -2,9 +2,9 @@ package AndroidTV.V3.validators;
 
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
-import AndroidTV.V3.profiles.ADBCropExpectation;
-import AndroidTV.V3.profiles.ADBElementExpectation;
-import AndroidTV.V3.profiles.ADBScreenProfile;
+import AndroidTV.V3.profiles.CropExpectation;
+import AndroidTV.V3.profiles.ElementExpectation;
+import AndroidTV.V3.profiles.ScreenProfile;
 import AndroidTV.V3.utils.ArtifactReporter;
 import AndroidTV.V3.utils.CropUtil;
 import AndroidTV.V3.utils.ImageComparator;
@@ -47,7 +47,7 @@ public class ADBScreenValidator {
     /**
      * Polls the UI XML until the profile's marker appears or timeout.
      */
-    public boolean waitUntilMarkerVisible(ADBScreenProfile profile, int timeoutMs) throws Exception {
+    public boolean waitUntilMarkerVisible(ScreenProfile profile, int timeoutMs) throws Exception {
         TestLogger.log("⏳ Waiting for screen marker: " + profile.getMarkerValue());
         long start = System.currentTimeMillis();
         long lastLog = 0;
@@ -80,7 +80,7 @@ public class ADBScreenValidator {
      *  - crops + compares each crop
      * Never throws. Returns a result.
      */
-    public ADBScreenAssertionResult assertAll(ADBScreenProfile profile) throws Exception {
+    public ADBScreenAssertionResult assertAll(ScreenProfile profile) throws Exception {
         TestLogger.log("");
         TestLogger.log("═══════════════════════════════════════════════════");
         TestLogger.log("🔍 ASSERTING SCREEN: " + profile.getName());
@@ -103,7 +103,7 @@ public class ADBScreenValidator {
         // 2. Elements
         TestLogger.log("");
         TestLogger.log("   ─── Elements ───");
-        for (ADBElementExpectation e : profile.getElements()) {
+        for (ElementExpectation e : profile.getElements()) {
             boolean found = checkElement(xml, e);
             result.putElement(e.getName(), found);
             if (found) {
@@ -133,7 +133,7 @@ public class ADBScreenValidator {
             String failCropFolder = failRootFolder + "/" + profile.getName() + "_" + testStartTime;
             new File(failCropFolder).mkdirs();
 
-            for (ADBCropExpectation c : profile.getCrops()) {
+            for (CropExpectation c : profile.getCrops()) {
                 String cropOutputPath = cropFolder + "/" + c.getName() + "_" + testStartTime + ".png";
                 String cropped = CropUtil.crop(fullScreenshotPath, cropOutputPath, c.getBounds());
                 if (cropped == null) {
@@ -181,7 +181,7 @@ public class ADBScreenValidator {
 
     // ==================== ELEMENT CHECK ====================
 
-    private boolean checkElement(String xml, ADBElementExpectation e) {
+    private boolean checkElement(String xml, ElementExpectation e) {
         switch (e.getType()) {
             case RESOURCE_ID:
                 return parser.containsResourceId(xml, e.getValue());

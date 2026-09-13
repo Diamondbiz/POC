@@ -1,15 +1,15 @@
 package AndroidTV.V3.profiles;
 
-import static AndroidTV.V3.profiles.ADBElementType.RESOURCE_ID;
-import static AndroidTV.V3.profiles.ADBElementType.TEXT_PRESENT_ANYWHERE;
+import static AndroidTV.V3.profiles.ElementType.RESOURCE_ID;
+import static AndroidTV.V3.profiles.ElementType.TEXT_PRESENT_ANYWHERE;
 
 /**
  * Screen profile for the OTP screen.
  */
-public class ADBOTPScreenProfile {
+public class OtpScreenProfile {
 
-    public static ADBScreenProfile get() {
-        return ADBScreenProfile.builder("OTPScreen")
+    public static ScreenProfile get() {
+        return ScreenProfile.builder("OTPScreen")
                 .marker(RESOURCE_ID, "txtToken")
 
                 .element("otpInputField", RESOURCE_ID,            "txtToken")

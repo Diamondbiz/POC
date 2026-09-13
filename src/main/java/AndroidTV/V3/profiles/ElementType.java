@@ -3,7 +3,7 @@ package AndroidTV.V3.profiles;
 /**
  * How an element expectation is matched against the UI XML.
  */
-public enum ADBElementType {
+public enum ElementType {
     /** Matches resource-id="<value>" */
     RESOURCE_ID,
 

@@ -6,7 +6,7 @@ import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.ADBLoginFlow;
 import AndroidTV.V3.flows.ADBPreconditions;
-import AndroidTV.V3.profiles.ADBLiveMosaicScreenProfile;
+import AndroidTV.V3.profiles.LiveMosaicScreenProfile;
 import AndroidTV.V3.services.ADBOTPService;
 import AndroidTV.V3.services.SSIDService;
 import AndroidTV.V3.utils.AssertionRunner;
@@ -78,7 +78,7 @@ public class LiveMosaicAssertion {
                     testStartTime);
 
             ADBScreenAssertionResult result = runner.runAssertion(
-                    ADBLiveMosaicScreenProfile.get(),
+                    LiveMosaicScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
                     TestConfig.SCREEN_MARKER_TIMEOUT_MS);

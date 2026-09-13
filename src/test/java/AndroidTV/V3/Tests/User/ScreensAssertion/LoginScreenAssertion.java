@@ -6,7 +6,7 @@ import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.ADBLoginFlow;
 import AndroidTV.V3.flows.ADBPreconditions;
-import AndroidTV.V3.profiles.ADBLoginScreenProfile;
+import AndroidTV.V3.profiles.LoginScreenProfile;
 import AndroidTV.V3.services.ADBOTPService;
 import AndroidTV.V3.services.KeypadStateService;
 import AndroidTV.V3.services.SSIDService;
@@ -90,7 +90,7 @@ public class LoginScreenAssertion {
                     testStartTime);
 
             ADBScreenAssertionResult result = runner.runAssertion(
-                    ADBLoginScreenProfile.get(),
+                    LoginScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
                     TestConfig.SCREEN_MARKER_TIMEOUT_MS);

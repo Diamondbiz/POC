@@ -4,13 +4,13 @@ package AndroidTV.V3.profiles;
  * Immutable description of one crop-and-compare check on a screen.
  * bounds = [x1, y1, x2, y2]
  */
-public class ADBCropExpectation {
+public class CropExpectation {
 
     private final String name;
     private final int[] bounds;
     private final String expectedBaselinePath;
 
-    public ADBCropExpectation(String name, int[] bounds, String expectedBaselinePath) {
+    public CropExpectation(String name, int[] bounds, String expectedBaselinePath) {
         if (bounds == null || bounds.length != 4) {
             throw new IllegalArgumentException("bounds must be [x1, y1, x2, y2]");
         }

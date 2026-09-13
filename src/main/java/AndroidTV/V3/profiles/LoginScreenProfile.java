@@ -1,15 +1,15 @@
 package AndroidTV.V3.profiles;
 
-import static AndroidTV.V3.profiles.ADBElementType.RESOURCE_ID;
-import static AndroidTV.V3.profiles.ADBElementType.TEXT_PRESENT_ANYWHERE;
+import static AndroidTV.V3.profiles.ElementType.RESOURCE_ID;
+import static AndroidTV.V3.profiles.ElementType.TEXT_PRESENT_ANYWHERE;
 
 /**
  * Screen profile for the HOT Login (Phone) screen.
  */
-public class ADBLoginScreenProfile {
+public class LoginScreenProfile {
 
-    public static ADBScreenProfile get() {
-        return ADBScreenProfile.builder("LoginScreen")
+    public static ScreenProfile get() {
+        return ScreenProfile.builder("LoginScreen")
                 .marker(RESOURCE_ID, "txtUserCellPhone")
 
                 .element("topScreenText",    TEXT_PRESENT_ANYWHERE, "להפעלת האפליקציה")

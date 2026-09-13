@@ -1,14 +1,14 @@
 package AndroidTV.V3.profiles;
 
-import static AndroidTV.V3.profiles.ADBElementType.RESOURCE_ID;
-import static AndroidTV.V3.profiles.ADBElementType.TEXT;
-import static AndroidTV.V3.profiles.ADBElementType.TEXT_PRESENT_ANYWHERE;
+import static AndroidTV.V3.profiles.ElementType.RESOURCE_ID;
+import static AndroidTV.V3.profiles.ElementType.TEXT;
+import static AndroidTV.V3.profiles.ElementType.TEXT_PRESENT_ANYWHERE;
 
 /**
  * Screen profile for the Live Mosaic screen.
  * Includes the fixed elements, all 11 genre tabs, and the crop checks.
  */
-public class ADBLiveMosaicScreenProfile {
+public class LiveMosaicScreenProfile {
 
     // ==================== CROP BASELINES ====================
     private static final String BASELINE_DIR =
@@ -51,8 +51,8 @@ public class ADBLiveMosaicScreenProfile {
             "רדיו"
     };
 
-    public static ADBScreenProfile get() {
-        ADBScreenProfile.Builder b = ADBScreenProfile.builder("LiveMosaicScreen")
+    public static ScreenProfile get() {
+        ScreenProfile.Builder b = ScreenProfile.builder("LiveMosaicScreen")
                 .marker(RESOURCE_ID, "mod_LiveMosaic")
 
                 // Fixed elements

@@ -14,15 +14,15 @@ import java.util.List;
  *
  * Profiles are data. They contain no behavior beyond "is my marker present?".
  */
-public class ADBScreenProfile {
+public class ScreenProfile {
 
     private final String name;
-    private final ADBElementType markerType;
+    private final ElementType markerType;
     private final String markerValue;
-    private final List<ADBElementExpectation> elements;
-    private final List<ADBCropExpectation> crops;
+    private final List<ElementExpectation> elements;
+    private final List<CropExpectation> crops;
 
-    private ADBScreenProfile(Builder b) {
+    private ScreenProfile(Builder b) {
         this.name = b.name;
         this.markerType = b.markerType;
         this.markerValue = b.markerValue;
@@ -31,10 +31,10 @@ public class ADBScreenProfile {
     }
 
     public String getName() { return name; }
-    public ADBElementType getMarkerType() { return markerType; }
+    public ElementType getMarkerType() { return markerType; }
     public String getMarkerValue() { return markerValue; }
-    public List<ADBElementExpectation> getElements() { return elements; }
-    public List<ADBCropExpectation> getCrops() { return crops; }
+    public List<ElementExpectation> getElements() { return elements; }
+    public List<CropExpectation> getCrops() { return crops; }
 
     /**
      * Returns true if the screen's marker is present in the given XML.
@@ -60,37 +60,37 @@ public class ADBScreenProfile {
 
     public static class Builder {
         private final String name;
-        private ADBElementType markerType = ADBElementType.RESOURCE_ID;
+        private ElementType markerType = ElementType.RESOURCE_ID;
         private String markerValue = "";
-        private final List<ADBElementExpectation> elements = new ArrayList<>();
-        private final List<ADBCropExpectation> crops = new ArrayList<>();
+        private final List<ElementExpectation> elements = new ArrayList<>();
+        private final List<CropExpectation> crops = new ArrayList<>();
 
         public Builder(String name) {
             this.name = name;
         }
 
-        public Builder marker(ADBElementType type, String value) {
+        public Builder marker(ElementType type, String value) {
             this.markerType = type;
             this.markerValue = value;
             return this;
         }
 
-        public Builder element(String elementName, ADBElementType type, String value) {
-            elements.add(new ADBElementExpectation(elementName, type, value));
+        public Builder element(String elementName, ElementType type, String value) {
+            elements.add(new ElementExpectation(elementName, type, value));
             return this;
         }
 
         public Builder crop(String cropName, int[] bounds, String baselinePath) {
-            crops.add(new ADBCropExpectation(cropName, bounds, baselinePath));
+            crops.add(new CropExpectation(cropName, bounds, baselinePath));
             return this;
         }
 
-        public ADBScreenProfile build() {
+        public ScreenProfile build() {
             if (markerValue == null || markerValue.isEmpty()) {
                 throw new IllegalStateException(
                         "Profile '" + name + "' must declare a marker (marker(type, value)).");
             }
-            return new ADBScreenProfile(this);
+            return new ScreenProfile(this);
         }
     }
 }

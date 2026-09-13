@@ -2,7 +2,7 @@ package AndroidTV.V3.utils;
 
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
-import AndroidTV.V3.profiles.ADBScreenProfile;
+import AndroidTV.V3.profiles.ScreenProfile;
 import AndroidTV.V3.validators.ADBScreenAssertionResult;
 import AndroidTV.V3.validators.ADBScreenValidator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -59,7 +59,7 @@ public class AssertionRunner {
      * @param markerTimeoutMs    max time to wait for the screen to load
      * @return                   assertion result (never null)
      */
-    public ADBScreenAssertionResult runAssertion(ADBScreenProfile profile,
+    public ADBScreenAssertionResult runAssertion(ScreenProfile profile,
                                                  String screenshotRoot,
                                                  String failRoot,
                                                  int markerTimeoutMs) throws Exception {
@@ -108,7 +108,7 @@ public class AssertionRunner {
 
     // ==================== JSON BUILDER ====================
 
-    private ObjectNode buildJson(ADBScreenProfile profile,
+    private ObjectNode buildJson(ScreenProfile profile,
                                  ADBScreenAssertionResult result,
                                  String screenshotRoot,
                                  String failRoot) {
