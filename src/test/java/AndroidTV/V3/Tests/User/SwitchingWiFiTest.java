@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SwitchingWiFi {
+public class SwitchingWiFiTest {
 
     private String testStartTime;
     private final String deviceUDID = "192.168.1.10:5555";
@@ -32,7 +32,7 @@ public class SwitchingWiFi {
     private final String xmlFolderPath = "/Users/Johnny/IdeaProjects/POC/xml";
 
     public static void main(String[] args) {
-        new SwitchingWiFi().runTest();
+        new SwitchingWiFiTest().runTest();
     }
 
     public void runTest() {

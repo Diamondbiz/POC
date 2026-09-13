@@ -6,9 +6,8 @@ import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.LoginFlow;
 import AndroidTV.V3.flows.Preconditions;
-import AndroidTV.V3.profiles.LoginScreenProfile;
+import AndroidTV.V3.profiles.OtpScreenProfile;
 import AndroidTV.V3.services.OtpService;
-import AndroidTV.V3.services.KeypadStateService;
 import AndroidTV.V3.services.SsidService;
 import AndroidTV.V3.utils.AssertionRunner;
 import AndroidTV.V3.utils.TestLogger;
@@ -17,25 +16,21 @@ import AndroidTV.V3.validators.ScreenAssertionResult;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LoginScreenAssertion {
-
-    private static final String EXPECTED_DEFAULT_DIGIT = "0";
+public class OtpScreenAssertionTest {
 
     public static void main(String[] args) {
-        new LoginScreenAssertion().run();
+        new OtpScreenAssertionTest().run();
     }
 
     public void run() {
         String testStartTime = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-        TestLogger.init("LoginScreenAssertion");
-
-        String keypadDecision = null;
+        TestLogger.init("OTPScreenAssertion");
 
         try {
             TestLogger.log("═══════════════════════════════════════════════════");
-            TestLogger.log("📱 LOGIN SCREEN ASSERTION TEST");
+            TestLogger.log("📱 OTP SCREEN ASSERTION TEST");
             TestLogger.log("═══════════════════════════════════════════════════");
 
             TestLogger.logStep("1", "Connecting to device");
@@ -69,20 +64,13 @@ public class LoginScreenAssertion {
             TestLogger.logStep("2", "Router / phone number check");
             ssidService.logRouterCheck();
 
-            TestLogger.logStep("3", "Ensuring app is running and on the login screen");
-            pre.ensureAppRunning();
-            pre.ensureOnLoginScreen();
+            String phone = ssidService.getPhoneNumberForCurrentSSID();
+            TestLogger.log("   📱 Test will use phone: " + phone);
 
-            TestLogger.logStep("4", "Reading keypad default selection (read-only)");
-            String perSessionFolder = TestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
-            KeypadStateService keypadStateService = new KeypadStateService(
-                    device, parser, TestConfig.XML_DIR, testStartTime,
-                    TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
-                    LoginFlow.KEY_BOUNDS_ON_SCREEN);
-            keypadDecision = keypadStateService.detectSelectedDigit();
-            TestLogger.log("   Login screen keypad default: " + keypadDecision);
+            TestLogger.logStep("3", "Ensuring device reaches OTP screen");
+            pre.ensureOnOtpScreen(phone);
 
-            TestLogger.logStep("5", "Running assertion for Login screen");
+            TestLogger.logStep("4", "Running assertion for OTP screen");
             AssertionRunner runner = new AssertionRunner(
                     device, parser,
                     TestConfig.XML_DIR,
@@ -90,18 +78,18 @@ public class LoginScreenAssertion {
                     testStartTime);
 
             ScreenAssertionResult result = runner.runAssertion(
-                    LoginScreenProfile.get(),
+                    OtpScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
                     TestConfig.SCREEN_MARKER_TIMEOUT_MS);
 
-            printSummary(result, keypadDecision);
+            printSummary(result);
 
             if (!result.isOverallPassed()) {
-                TestLogger.logError("❌ LOGIN SCREEN ASSERTION FAILED");
+                TestLogger.logError("❌ OTP SCREEN ASSERTION FAILED");
                 System.exit(1);
             }
-            TestLogger.logSuccess("✅ LOGIN SCREEN ASSERTION PASSED");
+            TestLogger.logSuccess("✅ OTP SCREEN ASSERTION PASSED");
 
         } catch (Exception e) {
             TestLogger.logError("❌ Test failed: " + e.getMessage());
@@ -112,7 +100,7 @@ public class LoginScreenAssertion {
         }
     }
 
-    private void printSummary(ScreenAssertionResult result, String keypadDecision) {
+    private void printSummary(ScreenAssertionResult result) {
         TestLogger.log("");
         TestLogger.log("═══ FINAL TEST SUMMARY ═══");
         TestLogger.log("📌 Screen:        " + result.getScreenName());
@@ -123,21 +111,6 @@ public class LoginScreenAssertion {
         if (result.getFailureReason() != null) {
             TestLogger.log("   ⚠️ Reason:      " + result.getFailureReason());
         }
-
-        TestLogger.log("");
-        TestLogger.log("═══ KEYPAD STATUS (Login screen) ═══");
-        TestLogger.log("   Expected default: " + EXPECTED_DEFAULT_DIGIT);
-        TestLogger.log("   Detected:         " + (keypadDecision == null ? "(none)" : keypadDecision));
-
-        if (EXPECTED_DEFAULT_DIGIT.equals(keypadDecision)) {
-            TestLogger.logSuccess("   ✅ Matches expected default");
-        } else if (keypadDecision != null && !keypadDecision.isEmpty()) {
-            TestLogger.logWarning("   ⚠️ Mismatch — the keypad was NOT in its fresh default state.");
-            TestLogger.logWarning("      Framework navigated from the detected position.");
-        } else {
-            TestLogger.logWarning("   ❌ No detection available");
-        }
-
-        TestLogger.log("════════════════════════════════════");
+        TestLogger.log("═══════════════════════════════════════");
     }
 }

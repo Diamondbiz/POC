@@ -6,8 +6,9 @@ import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.LoginFlow;
 import AndroidTV.V3.flows.Preconditions;
-import AndroidTV.V3.profiles.LiveMosaicScreenProfile;
+import AndroidTV.V3.profiles.LoginScreenProfile;
 import AndroidTV.V3.services.OtpService;
+import AndroidTV.V3.services.KeypadStateService;
 import AndroidTV.V3.services.SsidService;
 import AndroidTV.V3.utils.AssertionRunner;
 import AndroidTV.V3.utils.TestLogger;
@@ -16,21 +17,25 @@ import AndroidTV.V3.validators.ScreenAssertionResult;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LiveMosaicAssertion {
+public class LoginScreenAssertionTest {
+
+    private static final String EXPECTED_DEFAULT_DIGIT = "0";
 
     public static void main(String[] args) {
-        new LiveMosaicAssertion().run();
+        new LoginScreenAssertionTest().run();
     }
 
     public void run() {
         String testStartTime = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-        TestLogger.init("LiveMosaicAssertion");
+        TestLogger.init("LoginScreenAssertion");
+
+        String keypadDecision = null;
 
         try {
             TestLogger.log("═══════════════════════════════════════════════════");
-            TestLogger.log("📱 LIVE MOSAIC ASSERTION TEST");
+            TestLogger.log("📱 LOGIN SCREEN ASSERTION TEST");
             TestLogger.log("═══════════════════════════════════════════════════");
 
             TestLogger.logStep("1", "Connecting to device");
@@ -64,13 +69,20 @@ public class LiveMosaicAssertion {
             TestLogger.logStep("2", "Router / phone number check");
             ssidService.logRouterCheck();
 
-            String phone = ssidService.getPhoneNumberForCurrentSSID();
-            TestLogger.log("   📱 Test will use phone: " + phone);
+            TestLogger.logStep("3", "Ensuring app is running and on the login screen");
+            pre.ensureAppRunning();
+            pre.ensureOnLoginScreen();
 
-            TestLogger.logStep("3", "Ensuring device reaches Live Mosaic screen");
-            pre.ensureLoggedIn(phone, TestConfig.REGULAR_OTP);
+            TestLogger.logStep("4", "Reading keypad default selection (read-only)");
+            String perSessionFolder = TestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
+            KeypadStateService keypadStateService = new KeypadStateService(
+                    device, parser, TestConfig.XML_DIR, testStartTime,
+                    TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
+                    LoginFlow.KEY_BOUNDS_ON_SCREEN);
+            keypadDecision = keypadStateService.detectSelectedDigit();
+            TestLogger.log("   Login screen keypad default: " + keypadDecision);
 
-            TestLogger.logStep("4", "Running assertion for Live Mosaic screen");
+            TestLogger.logStep("5", "Running assertion for Login screen");
             AssertionRunner runner = new AssertionRunner(
                     device, parser,
                     TestConfig.XML_DIR,
@@ -78,18 +90,18 @@ public class LiveMosaicAssertion {
                     testStartTime);
 
             ScreenAssertionResult result = runner.runAssertion(
-                    LiveMosaicScreenProfile.get(),
+                    LoginScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
                     TestConfig.SCREEN_MARKER_TIMEOUT_MS);
 
-            printSummary(result);
+            printSummary(result, keypadDecision);
 
             if (!result.isOverallPassed()) {
-                TestLogger.logError("❌ LIVE MOSAIC ASSERTION FAILED");
+                TestLogger.logError("❌ LOGIN SCREEN ASSERTION FAILED");
                 System.exit(1);
             }
-            TestLogger.logSuccess("✅ LIVE MOSAIC ASSERTION PASSED");
+            TestLogger.logSuccess("✅ LOGIN SCREEN ASSERTION PASSED");
 
         } catch (Exception e) {
             TestLogger.logError("❌ Test failed: " + e.getMessage());
@@ -100,7 +112,7 @@ public class LiveMosaicAssertion {
         }
     }
 
-    private void printSummary(ScreenAssertionResult result) {
+    private void printSummary(ScreenAssertionResult result, String keypadDecision) {
         TestLogger.log("");
         TestLogger.log("═══ FINAL TEST SUMMARY ═══");
         TestLogger.log("📌 Screen:        " + result.getScreenName());
@@ -111,6 +123,21 @@ public class LiveMosaicAssertion {
         if (result.getFailureReason() != null) {
             TestLogger.log("   ⚠️ Reason:      " + result.getFailureReason());
         }
-        TestLogger.log("═══════════════════════════════════════");
+
+        TestLogger.log("");
+        TestLogger.log("═══ KEYPAD STATUS (Login screen) ═══");
+        TestLogger.log("   Expected default: " + EXPECTED_DEFAULT_DIGIT);
+        TestLogger.log("   Detected:         " + (keypadDecision == null ? "(none)" : keypadDecision));
+
+        if (EXPECTED_DEFAULT_DIGIT.equals(keypadDecision)) {
+            TestLogger.logSuccess("   ✅ Matches expected default");
+        } else if (keypadDecision != null && !keypadDecision.isEmpty()) {
+            TestLogger.logWarning("   ⚠️ Mismatch — the keypad was NOT in its fresh default state.");
+            TestLogger.logWarning("      Framework navigated from the detected position.");
+        } else {
+            TestLogger.logWarning("   ❌ No detection available");
+        }
+
+        TestLogger.log("════════════════════════════════════");
     }
 }

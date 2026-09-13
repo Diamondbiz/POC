@@ -6,7 +6,7 @@ import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.LoginFlow;
 import AndroidTV.V3.flows.Preconditions;
-import AndroidTV.V3.profiles.OtpScreenProfile;
+import AndroidTV.V3.profiles.LiveMosaicScreenProfile;
 import AndroidTV.V3.services.OtpService;
 import AndroidTV.V3.services.SsidService;
 import AndroidTV.V3.utils.AssertionRunner;
@@ -16,21 +16,21 @@ import AndroidTV.V3.validators.ScreenAssertionResult;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class OTPScreenAssertion {
+public class LiveMosaicAssertionTest {
 
     public static void main(String[] args) {
-        new OTPScreenAssertion().run();
+        new LiveMosaicAssertionTest().run();
     }
 
     public void run() {
         String testStartTime = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-        TestLogger.init("OTPScreenAssertion");
+        TestLogger.init("LiveMosaicAssertion");
 
         try {
             TestLogger.log("═══════════════════════════════════════════════════");
-            TestLogger.log("📱 OTP SCREEN ASSERTION TEST");
+            TestLogger.log("📱 LIVE MOSAIC ASSERTION TEST");
             TestLogger.log("═══════════════════════════════════════════════════");
 
             TestLogger.logStep("1", "Connecting to device");
@@ -67,10 +67,10 @@ public class OTPScreenAssertion {
             String phone = ssidService.getPhoneNumberForCurrentSSID();
             TestLogger.log("   📱 Test will use phone: " + phone);
 
-            TestLogger.logStep("3", "Ensuring device reaches OTP screen");
-            pre.ensureOnOtpScreen(phone);
+            TestLogger.logStep("3", "Ensuring device reaches Live Mosaic screen");
+            pre.ensureLoggedIn(phone, TestConfig.REGULAR_OTP);
 
-            TestLogger.logStep("4", "Running assertion for OTP screen");
+            TestLogger.logStep("4", "Running assertion for Live Mosaic screen");
             AssertionRunner runner = new AssertionRunner(
                     device, parser,
                     TestConfig.XML_DIR,
@@ -78,7 +78,7 @@ public class OTPScreenAssertion {
                     testStartTime);
 
             ScreenAssertionResult result = runner.runAssertion(
-                    OtpScreenProfile.get(),
+                    LiveMosaicScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
                     TestConfig.SCREEN_MARKER_TIMEOUT_MS);
@@ -86,10 +86,10 @@ public class OTPScreenAssertion {
             printSummary(result);
 
             if (!result.isOverallPassed()) {
-                TestLogger.logError("❌ OTP SCREEN ASSERTION FAILED");
+                TestLogger.logError("❌ LIVE MOSAIC ASSERTION FAILED");
                 System.exit(1);
             }
-            TestLogger.logSuccess("✅ OTP SCREEN ASSERTION PASSED");
+            TestLogger.logSuccess("✅ LIVE MOSAIC ASSERTION PASSED");
 
         } catch (Exception e) {
             TestLogger.logError("❌ Test failed: " + e.getMessage());
