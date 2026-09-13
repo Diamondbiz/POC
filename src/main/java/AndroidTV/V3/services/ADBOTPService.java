@@ -1,6 +1,6 @@
 package AndroidTV.V3.services;
 
-import AndroidTV.V3.config.ADBTestConfig;
+import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.ADBLoginFlow;
@@ -50,10 +50,10 @@ public class ADBOTPService {
 
         this.parser = new XmlParser();
 
-        String perSessionFolder = ADBTestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
+        String perSessionFolder = TestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
         KeypadStateService keypadStateService = new KeypadStateService(
                 device, parser, xmlFolderPath, testStartTime,
-                ADBTestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
+                TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
                 ADBLoginFlow.KEY_BOUNDS_ON_SCREEN);
 
         this.otpPage = new ADBOTPPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);

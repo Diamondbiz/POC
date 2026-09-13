@@ -1,6 +1,6 @@
 package AndroidTV.V3.Tests.User.ScreensAssertion;
 
-import AndroidTV.V3.config.ADBTestConfig;
+import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
@@ -34,32 +34,32 @@ public class LiveMosaicAssertion {
             TestLogger.log("═══════════════════════════════════════════════════");
 
             TestLogger.logStep("1", "Connecting to device");
-            DeviceController device = new DeviceController(ADBTestConfig.DEVICE_UDID);
+            DeviceController device = new DeviceController(TestConfig.DEVICE_UDID);
             device.connect();
 
             XmlParser parser = new XmlParser();
             ScreenState state = new ScreenState(
                     device, parser,
-                    ADBTestConfig.XML_DIR, testStartTime,
-                    ADBTestConfig.HOT_PACKAGE);
+                    TestConfig.XML_DIR, testStartTime,
+                    TestConfig.HOT_PACKAGE);
 
             ADBLoginFlow loginFlow = new ADBLoginFlow(
-                    ADBTestConfig.DEVICE_UDID,
-                    ADBTestConfig.XML_DIR,
+                    TestConfig.DEVICE_UDID,
+                    TestConfig.XML_DIR,
                     testStartTime);
 
             ADBOTPService otpService = new ADBOTPService(
-                    ADBTestConfig.DEVICE_UDID,
-                    ADBTestConfig.XML_DIR,
+                    TestConfig.DEVICE_UDID,
+                    TestConfig.XML_DIR,
                     testStartTime);
 
-            SSIDService ssidService = new SSIDService(device, ADBTestConfig.XML_DIR, testStartTime);
+            SSIDService ssidService = new SSIDService(device, TestConfig.XML_DIR, testStartTime);
 
             ADBPreconditions pre = new ADBPreconditions(
                     device, parser, state,
                     loginFlow, otpService,
-                    ADBTestConfig.XML_DIR, testStartTime,
-                    ADBTestConfig.HOT_PACKAGE);
+                    TestConfig.XML_DIR, testStartTime,
+                    TestConfig.HOT_PACKAGE);
 
             TestLogger.logStep("2", "Router / phone number check");
             ssidService.logRouterCheck();
@@ -68,20 +68,20 @@ public class LiveMosaicAssertion {
             TestLogger.log("   📱 Test will use phone: " + phone);
 
             TestLogger.logStep("3", "Ensuring device reaches Live Mosaic screen");
-            pre.ensureLoggedIn(phone, ADBTestConfig.REGULAR_OTP);
+            pre.ensureLoggedIn(phone, TestConfig.REGULAR_OTP);
 
             TestLogger.logStep("4", "Running assertion for Live Mosaic screen");
             AssertionRunner runner = new AssertionRunner(
                     device, parser,
-                    ADBTestConfig.XML_DIR,
-                    ADBTestConfig.LOGS_DIR,
+                    TestConfig.XML_DIR,
+                    TestConfig.LOGS_DIR,
                     testStartTime);
 
             ADBScreenAssertionResult result = runner.runAssertion(
                     ADBLiveMosaicScreenProfile.get(),
-                    ADBTestConfig.CURRENT_SCREEN_DIR,
-                    ADBTestConfig.FAIL_DIR,
-                    ADBTestConfig.SCREEN_MARKER_TIMEOUT_MS);
+                    TestConfig.CURRENT_SCREEN_DIR,
+                    TestConfig.FAIL_DIR,
+                    TestConfig.SCREEN_MARKER_TIMEOUT_MS);
 
             printSummary(result);
 

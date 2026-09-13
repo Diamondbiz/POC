@@ -10,9 +10,9 @@ package AndroidTV.V3.config;
  *   - all file paths (absolute)
  *   - image comparison thresholds
  */
-public final class ADBTestConfig {
+public final class TestConfig {
 
-    private ADBTestConfig() {
+    private TestConfig() {
         // constants only — do not instantiate
     }
 

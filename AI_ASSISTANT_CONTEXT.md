@@ -97,7 +97,7 @@ Tests can be run via:
 1. **Driver Type**: Always use `AndroidDriver` from `io.appium.java_client.android.AndroidDriver`
 2. **Device Connection**: The target device is connected via network (192.168.0.2:5555), not USB
 3. **Appium Server**: Ensure Appium server is running on http://127.0.0.1:4723/ before executing tests
-4. **Wait Strategies**: Use the configured implicit/explicit wait times from `ADBTestConfig`
+4. **Wait Strategies**: Use the configured implicit/explicit wait times from `TestConfig`
 5. **Page Objects**: When suggesting new page classes, extend from `BasePage` and follow existing patterns
 6. **Test Structure**: New tests should follow the existing package structure under `Tests/`
 7. **Validation**: Use existing validator classes for common validation scenarios

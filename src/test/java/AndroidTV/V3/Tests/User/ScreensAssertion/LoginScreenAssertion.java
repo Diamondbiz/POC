@@ -1,6 +1,6 @@
 package AndroidTV.V3.Tests.User.ScreensAssertion;
 
-import AndroidTV.V3.config.ADBTestConfig;
+import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
@@ -39,32 +39,32 @@ public class LoginScreenAssertion {
             TestLogger.log("═══════════════════════════════════════════════════");
 
             TestLogger.logStep("1", "Connecting to device");
-            DeviceController device = new DeviceController(ADBTestConfig.DEVICE_UDID);
+            DeviceController device = new DeviceController(TestConfig.DEVICE_UDID);
             device.connect();
 
             XmlParser parser = new XmlParser();
             ScreenState state = new ScreenState(
                     device, parser,
-                    ADBTestConfig.XML_DIR, testStartTime,
-                    ADBTestConfig.HOT_PACKAGE);
+                    TestConfig.XML_DIR, testStartTime,
+                    TestConfig.HOT_PACKAGE);
 
             ADBLoginFlow loginFlow = new ADBLoginFlow(
-                    ADBTestConfig.DEVICE_UDID,
-                    ADBTestConfig.XML_DIR,
+                    TestConfig.DEVICE_UDID,
+                    TestConfig.XML_DIR,
                     testStartTime);
 
             ADBOTPService otpService = new ADBOTPService(
-                    ADBTestConfig.DEVICE_UDID,
-                    ADBTestConfig.XML_DIR,
+                    TestConfig.DEVICE_UDID,
+                    TestConfig.XML_DIR,
                     testStartTime);
 
-            SSIDService ssidService = new SSIDService(device, ADBTestConfig.XML_DIR, testStartTime);
+            SSIDService ssidService = new SSIDService(device, TestConfig.XML_DIR, testStartTime);
 
             ADBPreconditions pre = new ADBPreconditions(
                     device, parser, state,
                     loginFlow, otpService,
-                    ADBTestConfig.XML_DIR, testStartTime,
-                    ADBTestConfig.HOT_PACKAGE);
+                    TestConfig.XML_DIR, testStartTime,
+                    TestConfig.HOT_PACKAGE);
 
             TestLogger.logStep("2", "Router / phone number check");
             ssidService.logRouterCheck();
@@ -74,10 +74,10 @@ public class LoginScreenAssertion {
             pre.ensureOnLoginScreen();
 
             TestLogger.logStep("4", "Reading keypad default selection (read-only)");
-            String perSessionFolder = ADBTestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
+            String perSessionFolder = TestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
             KeypadStateService keypadStateService = new KeypadStateService(
-                    device, parser, ADBTestConfig.XML_DIR, testStartTime,
-                    ADBTestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
+                    device, parser, TestConfig.XML_DIR, testStartTime,
+                    TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
                     ADBLoginFlow.KEY_BOUNDS_ON_SCREEN);
             keypadDecision = keypadStateService.detectSelectedDigit();
             TestLogger.log("   Login screen keypad default: " + keypadDecision);
@@ -85,15 +85,15 @@ public class LoginScreenAssertion {
             TestLogger.logStep("5", "Running assertion for Login screen");
             AssertionRunner runner = new AssertionRunner(
                     device, parser,
-                    ADBTestConfig.XML_DIR,
-                    ADBTestConfig.LOGS_DIR,
+                    TestConfig.XML_DIR,
+                    TestConfig.LOGS_DIR,
                     testStartTime);
 
             ADBScreenAssertionResult result = runner.runAssertion(
                     ADBLoginScreenProfile.get(),
-                    ADBTestConfig.CURRENT_SCREEN_DIR,
-                    ADBTestConfig.FAIL_DIR,
-                    ADBTestConfig.SCREEN_MARKER_TIMEOUT_MS);
+                    TestConfig.CURRENT_SCREEN_DIR,
+                    TestConfig.FAIL_DIR,
+                    TestConfig.SCREEN_MARKER_TIMEOUT_MS);
 
             printSummary(result, keypadDecision);
 

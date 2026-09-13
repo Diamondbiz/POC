@@ -1,6 +1,6 @@
 package AndroidTV.V3.flows;
 import AndroidTV.V3.services.ADBOTPService;
-import AndroidTV.V3.config.ADBTestConfig;
+import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
@@ -64,9 +64,9 @@ public class ADBPreconditions {
 
         device.bringAppToForeground(appPackage);
 
-        if (!waitForAppForegroundReliable(ADBTestConfig.FOREGROUND_WAIT_TIMEOUT_MS)) {
+        if (!waitForAppForegroundReliable(TestConfig.FOREGROUND_WAIT_TIMEOUT_MS)) {
             throw new RuntimeException("App did not reach foreground within " +
-                    ADBTestConfig.FOREGROUND_WAIT_TIMEOUT_MS + " ms");
+                    TestConfig.FOREGROUND_WAIT_TIMEOUT_MS + " ms");
         }
 
         TestLogger.log("   ↪ App is now foreground");
@@ -96,7 +96,7 @@ public class ADBPreconditions {
         TestLogger.log("🔧 ensureAppRestarted");
         ensureAppStopped();
         device.bringAppToForeground(appPackage);
-        if (!waitForAppForegroundReliable(ADBTestConfig.FOREGROUND_WAIT_TIMEOUT_MS)) {
+        if (!waitForAppForegroundReliable(TestConfig.FOREGROUND_WAIT_TIMEOUT_MS)) {
             throw new RuntimeException("App did not reach foreground after restart");
         }
     }
@@ -121,7 +121,7 @@ public class ADBPreconditions {
                     "Device is currently logged in. ensureLoggedOut() is not yet implemented.");
         }
 
-        if (waitForScreen("txtUserCellPhone", ADBTestConfig.LOGIN_SCREEN_TIMEOUT_MS)) {
+        if (waitForScreen("txtUserCellPhone", TestConfig.LOGIN_SCREEN_TIMEOUT_MS)) {
             TestLogger.log("   ↪ Login screen appeared after waiting");
             return;
         }
@@ -129,7 +129,7 @@ public class ADBPreconditions {
         // Diagnostics before failing
         TestLogger.logError("   ❌ Login screen did not appear — capturing diagnostics");
         try {
-            device.takeScreenshot(ADBTestConfig.FAIL_DIR, testStartTime);
+            device.takeScreenshot(TestConfig.FAIL_DIR, testStartTime);
             String xml = device.getScreenXml(xmlFolderPath, testStartTime);
             TestLogger.log("   Foreground package (dumpsys): " + device.getForegroundPackage());
             TestLogger.log("   Root package (UI dump):       " + parser.getRootPackage(xml));
@@ -140,7 +140,7 @@ public class ADBPreconditions {
         }
 
         throw new RuntimeException("Could not reach login screen within " +
-                ADBTestConfig.LOGIN_SCREEN_TIMEOUT_MS + " ms.");
+                TestConfig.LOGIN_SCREEN_TIMEOUT_MS + " ms.");
     }
 
     /**

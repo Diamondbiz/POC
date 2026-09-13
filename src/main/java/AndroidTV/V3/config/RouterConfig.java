@@ -6,7 +6,7 @@ import AndroidTV.V3.Models.RouterType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ADBRouterConfig {
+public class RouterConfig {
     private static final Map<String, Router> ROUTERS = new HashMap<>();
 
     static {

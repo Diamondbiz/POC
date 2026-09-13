@@ -1,6 +1,6 @@
 package AndroidTV.V3.Tests.User.OTPfieldValidation;
 
-import AndroidTV.V3.config.ADBRouterConfig;
+import AndroidTV.V3.config.RouterConfig;
 import AndroidTV.V3.Models.Router;
 import AndroidTV.V3.utils.TestLogger;
 import org.apache.commons.io.FileUtils;
@@ -137,7 +137,7 @@ public class ADBValidOTP {
         String ssid = getCurrentSSID();
         TestLogger.log("   📶 Current SSID: " + ssid);
 
-        Router router = ADBRouterConfig.getRouterBySSID(ssid);
+        Router router = RouterConfig.getRouterBySSID(ssid);
         if (router != null) {
             TestLogger.log("   ✅ Router found in config: " + router.getSsid());
             TestLogger.log("   ✅ Valid phone number for this router: " + router.getValidPhoneNumber());

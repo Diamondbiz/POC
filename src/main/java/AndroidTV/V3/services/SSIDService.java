@@ -1,8 +1,8 @@
 package AndroidTV.V3.services;
 
 import AndroidTV.V3.Models.Router;
-import AndroidTV.V3.config.ADBRouterConfig;
-import AndroidTV.V3.config.ADBTestConfig;
+import AndroidTV.V3.config.RouterConfig;
+import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.utils.TestLogger;
 
@@ -81,7 +81,7 @@ public class SSIDService {
         // We can't access ADBDeviceController's private runCommand.
         // Execute adb directly here. The UDID comes from the device instance,
         // so we re-resolve it from ADBTestConfig for consistency.
-        String udid = ADBTestConfig.DEVICE_UDID;
+        String udid = TestConfig.DEVICE_UDID;
 
         ProcessBuilder pb = new ProcessBuilder("adb", "-s", udid, "shell", shellCommand);
         pb.redirectErrorStream(true);
@@ -107,12 +107,12 @@ public class SSIDService {
      */
     public RouterInfo getCurrentRouterInfo() throws Exception {
         String ssid = getCurrentSSID();
-        Router router = ADBRouterConfig.getRouterBySSID(ssid);
+        Router router = RouterConfig.getRouterBySSID(ssid);
 
         if (router == null) {
             return new RouterInfo(
                     ssid, false, "",
-                    ADBTestConfig.REGULAR_PHONE_NUMBER,
+                    TestConfig.REGULAR_PHONE_NUMBER,
                     "FALLBACK_ROUTER_NOT_FOUND");
         }
 
@@ -120,7 +120,7 @@ public class SSIDService {
         if (expected == null || expected.trim().isEmpty()) {
             return new RouterInfo(
                     ssid, true, "",
-                    ADBTestConfig.REGULAR_PHONE_NUMBER,
+                    TestConfig.REGULAR_PHONE_NUMBER,
                     "FALLBACK_NO_PHONE_DEFINED");
         }
 

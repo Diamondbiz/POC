@@ -1,6 +1,6 @@
 package AndroidTV.V3.Tests.User;
 
-import AndroidTV.V3.config.ADBRouterConfig;
+import AndroidTV.V3.config.RouterConfig;
 import AndroidTV.V3.Models.Router;
 
 import java.io.BufferedReader;
@@ -206,7 +206,7 @@ public class SwitchingWiFi {
         String ssid = getCurrentSSID();
         System.out.println("   📶 New SSID: " + ssid);
 
-        Router router = ADBRouterConfig.getRouterBySSID(ssid);
+        Router router = RouterConfig.getRouterBySSID(ssid);
         if (router != null) {
             System.out.println("✅ Connected to router: " + router.getSsid());
             System.out.println("   📍 MAC: " + router.getMacAddress());
