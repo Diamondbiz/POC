@@ -4,7 +4,7 @@ import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.ADBLoginFlow;
-import AndroidTV.V3.pages.ADBOTPPage;
+import AndroidTV.V3.pages.OtpPage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class ADBOTPService {
 
     private final DeviceController device;
-    private final ADBOTPPage otpPage;
+    private final OtpPage otpPage;
     private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
@@ -56,7 +56,7 @@ public class ADBOTPService {
                 TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
                 ADBLoginFlow.KEY_BOUNDS_ON_SCREEN);
 
-        this.otpPage = new ADBOTPPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
+        this.otpPage = new OtpPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
     }
 
     public void waitForOTP() throws Exception {

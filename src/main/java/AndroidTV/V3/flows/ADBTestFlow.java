@@ -3,9 +3,9 @@ package AndroidTV.V3.flows;
 import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
-import AndroidTV.V3.pages.ADBLiveMosaicPage;
-import AndroidTV.V3.pages.ADBLoginPage;
-import AndroidTV.V3.pages.ADBOTPPage;
+import AndroidTV.V3.pages.LiveMosaicPage;
+import AndroidTV.V3.pages.LoginPage;
+import AndroidTV.V3.pages.OtpPage;
 import AndroidTV.V3.services.KeypadStateService;
 
 import java.util.Map;
@@ -16,9 +16,9 @@ import java.util.Map;
 public class ADBTestFlow {
 
     private final DeviceController device;
-    private final ADBLoginPage loginPage;
-    private final ADBOTPPage otpPage;
-    private final ADBLiveMosaicPage liveMosaicPage;
+    private final LoginPage loginPage;
+    private final OtpPage otpPage;
+    private final LiveMosaicPage liveMosaicPage;
     private final XmlParser parser;
 
     private final String xmlFolderPath;
@@ -39,9 +39,9 @@ public class ADBTestFlow {
                 device, parser, xmlFolderPath, testStartTime,
                 TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder, KEY_BOUNDS_ON_SCREEN);
 
-        this.loginPage = new ADBLoginPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
-        this.otpPage = new ADBOTPPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
-        this.liveMosaicPage = new ADBLiveMosaicPage(device, parser, xmlFolderPath, testStartTime);
+        this.loginPage = new LoginPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
+        this.otpPage = new OtpPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
+        this.liveMosaicPage = new LiveMosaicPage(device, parser, xmlFolderPath, testStartTime);
     }
 
     public void openAppAndWaitForLogin() throws Exception {
@@ -85,7 +85,7 @@ public class ADBTestFlow {
 
     public DeviceController getDevice() { return device; }
     public XmlParser getParser() { return parser; }
-    public ADBLoginPage getLoginPage() { return loginPage; }
-    public ADBOTPPage getOTPPage() { return otpPage; }
-    public ADBLiveMosaicPage getLiveMosaicPage() { return liveMosaicPage; }
+    public LoginPage getLoginPage() { return loginPage; }
+    public OtpPage getOTPPage() { return otpPage; }
+    public LiveMosaicPage getLiveMosaicPage() { return liveMosaicPage; }
 }

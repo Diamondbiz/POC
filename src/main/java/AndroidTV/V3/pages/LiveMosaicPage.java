@@ -6,14 +6,14 @@ import AndroidTV.V3.core.XmlParser;
 /**
  * Page Object for the Live Mosaic screen (after successful login).
  */
-public class ADBLiveMosaicPage {
+public class LiveMosaicPage {
 
     private final DeviceController device;
     private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
 
-    public ADBLiveMosaicPage(DeviceController device, XmlParser parser, String xmlFolderPath, String testStartTime) {
+    public LiveMosaicPage(DeviceController device, XmlParser parser, String xmlFolderPath, String testStartTime) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;

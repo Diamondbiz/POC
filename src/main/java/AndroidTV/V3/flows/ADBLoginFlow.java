@@ -3,8 +3,8 @@ package AndroidTV.V3.flows;
 import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
-import AndroidTV.V3.pages.ADBLoginPage;
-import AndroidTV.V3.pages.ADBOTPPage;
+import AndroidTV.V3.pages.LoginPage;
+import AndroidTV.V3.pages.OtpPage;
 import AndroidTV.V3.services.KeypadStateService;
 
 import java.util.HashMap;
@@ -16,8 +16,8 @@ import java.util.Map;
 public class ADBLoginFlow {
 
     private final DeviceController device;
-    private final ADBLoginPage loginPage;
-    private final ADBOTPPage otpPage;
+    private final LoginPage loginPage;
+    private final OtpPage otpPage;
     private final String xmlFolderPath;
     private final String testStartTime;
 
@@ -76,8 +76,8 @@ public class ADBLoginFlow {
                 device, parser, xmlFolderPath, testStartTime,
                 TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder, KEY_BOUNDS_ON_SCREEN);
 
-        this.loginPage = new ADBLoginPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
-        this.otpPage = new ADBOTPPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
+        this.loginPage = new LoginPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
+        this.otpPage = new OtpPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
     }
 
     public void openAppAndWaitForLogin() throws Exception {
@@ -116,7 +116,7 @@ public class ADBLoginFlow {
         device.forceStopApp(packageName);
     }
 
-    public ADBOTPPage getOtpPage() {
+    public OtpPage getOtpPage() {
         return otpPage;
     }
 }

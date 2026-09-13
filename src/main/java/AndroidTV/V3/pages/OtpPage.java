@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Page Object for the OTP screen.
  */
-public class ADBOTPPage {
+public class OtpPage {
 
     private final DeviceController device;
     private final XmlParser parser;
@@ -18,11 +18,11 @@ public class ADBOTPPage {
     private final String testStartTime;
     private final KeypadStateService keypadStateService;
 
-    public ADBOTPPage(DeviceController device,
-                      XmlParser parser,
-                      String xmlFolderPath,
-                      String testStartTime,
-                      KeypadStateService keypadStateService) {
+    public OtpPage(DeviceController device,
+                   XmlParser parser,
+                   String xmlFolderPath,
+                   String testStartTime,
+                   KeypadStateService keypadStateService) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;
