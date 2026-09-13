@@ -7,19 +7,21 @@ import AndroidTV.V3.validators.ScreenAssertionResult;
 import AndroidTV.V3.validators.ScreenValidator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.File;
+
 /**
  * Test-facing assertion runner.
  *
  * Combines:
- *   1. ADBScreenValidator (wait + assert)
- *   2. JSON logging via Jackson (through ADBArtifactReporter)
+ *   1. ScreenValidator (wait + assert)
+ *   2. JSON logging via Jackson (through ArtifactReporter)
  *   3. Console file/folder links
  *
  * Usage (from a test):
- *   ADBTestAssertionRunner runner = new ADBTestAssertionRunner(
+ *   AssertionRunner runner = new AssertionRunner(
  *       device, parser, xmlFolder, logsFolder, testStartTime);
- *   ADBScreenAssertionResult r = runner.runAssertion(
- *       ADBLoginScreenProfile.get(),
+ *   ScreenAssertionResult r = runner.runAssertion(
+ *       LoginScreenProfile.get(),
  *       "Screens/Current screen",
  *       "Screens/Fail",
  *       60000);
@@ -52,12 +54,6 @@ public class AssertionRunner {
 
     /**
      * Runs the full assertion pipeline for one screen profile.
-     *
-     * @param profile            the screen profile
-     * @param screenshotRoot     e.g. "Screens/Current screen"
-     * @param failRoot           e.g. "Screens/Fail"
-     * @param markerTimeoutMs    max time to wait for the screen to load
-     * @return                   assertion result (never null)
      */
     public ScreenAssertionResult runAssertion(ScreenProfile profile,
                                               String screenshotRoot,

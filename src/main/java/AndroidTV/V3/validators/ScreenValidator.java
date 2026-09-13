@@ -13,8 +13,8 @@ import AndroidTV.V3.utils.TestLogger;
 import java.io.File;
 
 /**
- * Generic screen validator. Consumes ANY ADBScreenProfile and produces an
- * ADBScreenAssertionResult. Uses soft assertions throughout — never throws on
+ * Generic screen validator. Consumes ANY ScreenProfile and produces a
+ * ScreenAssertionResult. Uses soft assertions throughout — never throws on
  * element or crop mismatches. Only logs and records.
  *
  * Screen-agnostic. Reusable by any test class.
@@ -25,8 +25,8 @@ public class ScreenValidator {
     private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
-    private final String screenshotRootFolder;    // e.g. "Screens/Current screen"
-    private final String failRootFolder;          // e.g. "Screens/Fail"
+    private final String screenshotRootFolder;
+    private final String failRootFolder;
 
     public ScreenValidator(DeviceController device,
                            XmlParser parser,
@@ -44,9 +44,6 @@ public class ScreenValidator {
 
     // ==================== WAIT ====================
 
-    /**
-     * Polls the UI XML until the profile's marker appears or timeout.
-     */
     public boolean waitUntilMarkerVisible(ScreenProfile profile, int timeoutMs) throws Exception {
         TestLogger.log("⏳ Waiting for screen marker: " + profile.getMarkerValue());
         long start = System.currentTimeMillis();
@@ -72,14 +69,6 @@ public class ScreenValidator {
 
     // ==================== ASSERT ALL ====================
 
-    /**
-     * Full assertion pass:
-     *  - checks marker
-     *  - checks each element
-     *  - takes a screenshot
-     *  - crops + compares each crop
-     * Never throws. Returns a result.
-     */
     public ScreenAssertionResult assertAll(ScreenProfile profile) throws Exception {
         TestLogger.log("");
         TestLogger.log("═══════════════════════════════════════════════════");

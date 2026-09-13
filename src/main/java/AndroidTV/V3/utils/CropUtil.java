@@ -29,14 +29,14 @@ public class CropUtil {
         int height = y2 - y1;
 
         if (width <= 0 || height <= 0) {
-            TestLogger.logWarning("ADBCropUtil: invalid bounds " +
+            TestLogger.logWarning("CropUtil: invalid bounds " +
                     x1 + "," + y1 + " → " + x2 + "," + y2);
             return null;
         }
 
         File src = new File(sourcePath);
         if (!src.exists()) {
-            TestLogger.logWarning("ADBCropUtil: source not found: " + sourcePath);
+            TestLogger.logWarning("CropUtil: source not found: " + sourcePath);
             return null;
         }
 
@@ -61,7 +61,7 @@ public class CropUtil {
         }
 
         if (exitCode != 0 || !out.exists()) {
-            TestLogger.logWarning("ADBCropUtil: crop failed for " + outputPath);
+            TestLogger.logWarning("CropUtil: crop failed for " + outputPath);
             return null;
         }
 
@@ -73,7 +73,7 @@ public class CropUtil {
      */
     public static String crop(String sourcePath, String outputPath, int[] bounds) throws Exception {
         if (bounds == null || bounds.length != 4) {
-            TestLogger.logWarning("ADBCropUtil: bounds must be [x1,y1,x2,y2]");
+            TestLogger.logWarning("CropUtil: bounds must be [x1,y1,x2,y2]");
             return null;
         }
         return crop(sourcePath, outputPath, bounds[0], bounds[1], bounds[2], bounds[3]);
@@ -88,7 +88,6 @@ public class CropUtil {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Silent — we don't want to spam the console with every crop.
-                // Callers can log the output path if needed.
             }
         }
         return process.waitFor();

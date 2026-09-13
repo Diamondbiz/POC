@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
  * Resolves the current Wi-Fi SSID and the phone number to use for the current router.
  *
  * Fallback policy (Choice A — static):
- *   - If SSID is in ADBRouterConfig and has a non-empty validPhoneNumber → use it.
- *   - Otherwise → fall back to ADBTestConfig.REGULAR_PHONE_NUMBER.
+ *   - If SSID is in RouterConfig and has a non-empty validPhoneNumber → use it.
+ *   - Otherwise → fall back to TestConfig.REGULAR_PHONE_NUMBER.
  *
  * Also provides a small log block for test start, plus a mismatch warning for callers
  * that pass a custom phone number differing from the router's expected one.
@@ -25,10 +25,9 @@ public class SsidService {
     public static class RouterInfo {
         public final String ssid;
         public final boolean routerFound;
-        public final String expectedPhone;   // empty if unknown
-        public final String phoneToUse;      // always non-empty
-        public final String status;          // "MATCH", "FALLBACK_ROUTER_NOT_FOUND",
-        // "FALLBACK_NO_PHONE_DEFINED"
+        public final String expectedPhone;
+        public final String phoneToUse;
+        public final String status;
 
         public RouterInfo(String ssid, boolean routerFound, String expectedPhone,
                           String phoneToUse, String status) {
@@ -54,14 +53,8 @@ public class SsidService {
 
     /**
      * Reads the current Wi-Fi SSID from the device. Returns "Unknown" if not found.
-     *
-     * Runs "dumpsys wifi" and filters in Java (avoids shell quoting issues).
      */
     public String getCurrentSSID() throws Exception {
-        // We need a raw command runner here. Use ADBDeviceController's public methods
-        // via a temporary XML dump is not viable; instead we leverage the device's
-        // generic exec path. ADBDeviceController currently doesn't expose a raw
-        // "runCommand" — so we shell out to adb directly via a short bash fallback.
         String output = runAdbShell("dumpsys wifi");
 
         Pattern p = Pattern.compile("SSID:\\s*\"([^\"]+)\"");
@@ -74,13 +67,8 @@ public class SsidService {
 
     /**
      * Internal helper: runs "adb -s <udid> shell <shellCommand>" and returns stdout.
-     * Bypasses the strict runCommand because some shell commands return non-zero
-     * but are still informative (e.g. grep).
      */
     private String runAdbShell(String shellCommand) throws Exception {
-        // We can't access ADBDeviceController's private runCommand.
-        // Execute adb directly here. The UDID comes from the device instance,
-        // so we re-resolve it from ADBTestConfig for consistency.
         String udid = TestConfig.DEVICE_UDID;
 
         ProcessBuilder pb = new ProcessBuilder("adb", "-s", udid, "shell", shellCommand);
@@ -95,7 +83,7 @@ public class SsidService {
                 sb.append(line).append("\n");
             }
         }
-        process.waitFor(); // ignore exit code — we only care about content
+        process.waitFor();
         return sb.toString();
     }
 
@@ -159,7 +147,7 @@ public class SsidService {
                 TestLogger.logSuccess("   Status:             ✅ MATCH — using the router's configured phone number");
                 break;
             case "FALLBACK_ROUTER_NOT_FOUND":
-                TestLogger.logWarning("   Status:             ⚠️ FALLBACK — SSID not in ADBRouterConfig");
+                TestLogger.logWarning("   Status:             ⚠️ FALLBACK — SSID not in RouterConfig");
                 TestLogger.logWarning("                       Using default REGULAR_PHONE_NUMBER");
                 break;
             case "FALLBACK_NO_PHONE_DEFINED":
@@ -176,17 +164,12 @@ public class SsidService {
 
     /**
      * Prints a warning if the caller passes a phone number that differs from the
-     * router's expected one. Does not fail. Intended for future use when tests
-     * accept a custom phone number.
+     * router's expected one. Does not fail.
      */
     public void logPhoneNumberOverrideWarning(String insertedPhone) throws Exception {
         RouterInfo info = getCurrentRouterInfo();
-        if (info.expectedPhone.isEmpty()) {
-            return; // nothing to compare against
-        }
-        if (info.expectedPhone.equals(insertedPhone)) {
-            return; // matches — no warning
-        }
+        if (info.expectedPhone.isEmpty()) return;
+        if (info.expectedPhone.equals(insertedPhone)) return;
 
         TestLogger.log("");
         TestLogger.logWarning("⚠️ PHONE NUMBER MISMATCH");
