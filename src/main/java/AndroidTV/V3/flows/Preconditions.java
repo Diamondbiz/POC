@@ -1,5 +1,5 @@
 package AndroidTV.V3.flows;
-import AndroidTV.V3.services.ADBOTPService;
+import AndroidTV.V3.services.OtpService;
 import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.ScreenState;
@@ -11,25 +11,25 @@ import AndroidTV.V3.utils.TestLogger;
  * Every enforcer checks first (read-only), then acts only if needed.
  * Never asserts. Throws only when target state cannot be reached.
  */
-public class ADBPreconditions {
+public class Preconditions {
 
     private final DeviceController device;
     private final XmlParser parser;
     private final ScreenState state;
-    private final ADBLoginFlow loginFlow;
-    private final ADBOTPService otpService;
+    private final LoginFlow loginFlow;
+    private final OtpService otpService;
     private final String xmlFolderPath;
     private final String testStartTime;
     private final String appPackage;
 
-    public ADBPreconditions(DeviceController device,
-                            XmlParser parser,
-                            ScreenState state,
-                            ADBLoginFlow loginFlow,
-                            ADBOTPService otpService,
-                            String xmlFolderPath,
-                            String testStartTime,
-                            String appPackage) {
+    public Preconditions(DeviceController device,
+                         XmlParser parser,
+                         ScreenState state,
+                         LoginFlow loginFlow,
+                         OtpService otpService,
+                         String xmlFolderPath,
+                         String testStartTime,
+                         String appPackage) {
         this.device = device;
         this.parser = parser;
         this.state = state;

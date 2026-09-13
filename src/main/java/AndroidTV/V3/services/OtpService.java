@@ -3,7 +3,7 @@ package AndroidTV.V3.services;
 import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
-import AndroidTV.V3.flows.ADBLoginFlow;
+import AndroidTV.V3.flows.LoginFlow;
 import AndroidTV.V3.pages.OtpPage;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Business logic layer for OTP operations.
  */
-public class ADBOTPService {
+public class OtpService {
 
     private final DeviceController device;
     private final OtpPage otpPage;
@@ -43,7 +43,7 @@ public class ADBOTPService {
         KEYPAD_POSITIONS.put("Next", new int[]{3, 2});
     }
 
-    public ADBOTPService(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
+    public OtpService(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
         this.device = new DeviceController(deviceUDID);
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;
@@ -54,7 +54,7 @@ public class ADBOTPService {
         KeypadStateService keypadStateService = new KeypadStateService(
                 device, parser, xmlFolderPath, testStartTime,
                 TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
-                ADBLoginFlow.KEY_BOUNDS_ON_SCREEN);
+                LoginFlow.KEY_BOUNDS_ON_SCREEN);
 
         this.otpPage = new OtpPage(device, parser, xmlFolderPath, testStartTime, keypadStateService);
     }

@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Orchestrates the login flow.
  */
-public class ADBLoginFlow {
+public class LoginFlow {
 
     private final DeviceController device;
     private final LoginPage loginPage;
@@ -64,7 +64,7 @@ public class ADBLoginFlow {
         KEY_BOUNDS_ON_SCREEN.put("Next", new int[]{1557, 568, 79, 68});
     }
 
-    public ADBLoginFlow(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
+    public LoginFlow(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
         this.device = new DeviceController(deviceUDID);
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;

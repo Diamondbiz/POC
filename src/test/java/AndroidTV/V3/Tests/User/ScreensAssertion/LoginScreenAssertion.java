@@ -4,12 +4,12 @@ import AndroidTV.V3.config.TestConfig;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.ScreenState;
 import AndroidTV.V3.core.XmlParser;
-import AndroidTV.V3.flows.ADBLoginFlow;
-import AndroidTV.V3.flows.ADBPreconditions;
+import AndroidTV.V3.flows.LoginFlow;
+import AndroidTV.V3.flows.Preconditions;
 import AndroidTV.V3.profiles.LoginScreenProfile;
-import AndroidTV.V3.services.ADBOTPService;
+import AndroidTV.V3.services.OtpService;
 import AndroidTV.V3.services.KeypadStateService;
-import AndroidTV.V3.services.SSIDService;
+import AndroidTV.V3.services.SsidService;
 import AndroidTV.V3.utils.AssertionRunner;
 import AndroidTV.V3.utils.TestLogger;
 import AndroidTV.V3.validators.ScreenAssertionResult;
@@ -48,19 +48,19 @@ public class LoginScreenAssertion {
                     TestConfig.XML_DIR, testStartTime,
                     TestConfig.HOT_PACKAGE);
 
-            ADBLoginFlow loginFlow = new ADBLoginFlow(
+            LoginFlow loginFlow = new LoginFlow(
                     TestConfig.DEVICE_UDID,
                     TestConfig.XML_DIR,
                     testStartTime);
 
-            ADBOTPService otpService = new ADBOTPService(
+            OtpService otpService = new OtpService(
                     TestConfig.DEVICE_UDID,
                     TestConfig.XML_DIR,
                     testStartTime);
 
-            SSIDService ssidService = new SSIDService(device, TestConfig.XML_DIR, testStartTime);
+            SsidService ssidService = new SsidService(device, TestConfig.XML_DIR, testStartTime);
 
-            ADBPreconditions pre = new ADBPreconditions(
+            Preconditions pre = new Preconditions(
                     device, parser, state,
                     loginFlow, otpService,
                     TestConfig.XML_DIR, testStartTime,
@@ -78,7 +78,7 @@ public class LoginScreenAssertion {
             KeypadStateService keypadStateService = new KeypadStateService(
                     device, parser, TestConfig.XML_DIR, testStartTime,
                     TestConfig.KEYPAD_REF_SELECTED_DIR, perSessionFolder,
-                    ADBLoginFlow.KEY_BOUNDS_ON_SCREEN);
+                    LoginFlow.KEY_BOUNDS_ON_SCREEN);
             keypadDecision = keypadStateService.detectSelectedDigit();
             TestLogger.log("   Login screen keypad default: " + keypadDecision);
 

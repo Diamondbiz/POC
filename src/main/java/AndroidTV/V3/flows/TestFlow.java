@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Master orchestrator for all flows.
  */
-public class ADBTestFlow {
+public class TestFlow {
 
     private final DeviceController device;
     private final LoginPage loginPage;
@@ -24,10 +24,10 @@ public class ADBTestFlow {
     private final String xmlFolderPath;
     private final String testStartTime;
 
-    private static final Map<String, int[]> KEYPAD_POSITIONS = ADBLoginFlow.KEYPAD_POSITIONS;
-    private static final Map<String, int[]> KEY_BOUNDS_ON_SCREEN = ADBLoginFlow.KEY_BOUNDS_ON_SCREEN;
+    private static final Map<String, int[]> KEYPAD_POSITIONS = LoginFlow.KEYPAD_POSITIONS;
+    private static final Map<String, int[]> KEY_BOUNDS_ON_SCREEN = LoginFlow.KEY_BOUNDS_ON_SCREEN;
 
-    public ADBTestFlow(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
+    public TestFlow(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
         this.device = new DeviceController(deviceUDID);
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;

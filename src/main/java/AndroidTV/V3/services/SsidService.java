@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * Also provides a small log block for test start, plus a mismatch warning for callers
  * that pass a custom phone number differing from the router's expected one.
  */
-public class SSIDService {
+public class SsidService {
 
     /** Simple holder for router info. */
     public static class RouterInfo {
@@ -44,7 +44,7 @@ public class SSIDService {
     private final String xmlFolderPath;
     private final String testStartTime;
 
-    public SSIDService(DeviceController device, String xmlFolderPath, String testStartTime) {
+    public SsidService(DeviceController device, String xmlFolderPath, String testStartTime) {
         this.device = device;
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;

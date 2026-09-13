@@ -1,17 +1,17 @@
 package AndroidTV.V3.services;
 
-import AndroidTV.V3.flows.ADBLoginFlow;
+import AndroidTV.V3.flows.LoginFlow;
 
 /**
  * Business logic layer for login operations.
  * Test classes call this service, NOT the flow or pages directly.
  */
-public class ADBLoginService {
+public class LoginService {
 
-    private ADBLoginFlow loginFlow;
+    private LoginFlow loginFlow;
 
-    public ADBLoginService(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
-        this.loginFlow = new ADBLoginFlow(deviceUDID, xmlFolderPath, testStartTime);
+    public LoginService(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
+        this.loginFlow = new LoginFlow(deviceUDID, xmlFolderPath, testStartTime);
     }
 
     /**
