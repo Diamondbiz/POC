@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AIAssistantProjectSettings">
+    <option name="contextFiles">
+      <list>
+        <option value="$PROJECT_DIR$/AI_ASSISTANT_CONTEXT.md" />
+      </list>
+    </option>
+  </component>
+</project>

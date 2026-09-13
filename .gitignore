@@ -1,0 +1,22 @@
+# Build output
+target/
+
+# Test artifacts (regenerated on every run)
+Screens/Current screen/
+Screens/Fail/
+Screens/Pass/
+Screens/test_failure_*.png
+test-logs/
+logs/
+allure-results/
+xml/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# Logs
+*.log
