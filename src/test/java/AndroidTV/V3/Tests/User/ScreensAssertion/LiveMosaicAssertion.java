@@ -11,7 +11,7 @@ import AndroidTV.V3.services.ADBOTPService;
 import AndroidTV.V3.services.SSIDService;
 import AndroidTV.V3.utils.AssertionRunner;
 import AndroidTV.V3.utils.TestLogger;
-import AndroidTV.V3.validators.ADBScreenAssertionResult;
+import AndroidTV.V3.validators.ScreenAssertionResult;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -77,7 +77,7 @@ public class LiveMosaicAssertion {
                     TestConfig.LOGS_DIR,
                     testStartTime);
 
-            ADBScreenAssertionResult result = runner.runAssertion(
+            ScreenAssertionResult result = runner.runAssertion(
                     LiveMosaicScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
@@ -100,7 +100,7 @@ public class LiveMosaicAssertion {
         }
     }
 
-    private void printSummary(ADBScreenAssertionResult result) {
+    private void printSummary(ScreenAssertionResult result) {
         TestLogger.log("");
         TestLogger.log("═══ FINAL TEST SUMMARY ═══");
         TestLogger.log("📌 Screen:        " + result.getScreenName());

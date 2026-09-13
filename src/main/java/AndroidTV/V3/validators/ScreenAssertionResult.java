@@ -8,7 +8,7 @@ import java.util.Map;
  * Result of running the generic screen validator against one ScreenProfile.
  * Pure data holder. No behavior beyond "did everything pass?" and summaries.
  */
-public class ADBScreenAssertionResult {
+public class ScreenAssertionResult {
 
     // ==================== CROP RESULT ====================
 
@@ -35,7 +35,7 @@ public class ADBScreenAssertionResult {
 
     // ==================== CONSTRUCTOR ====================
 
-    public ADBScreenAssertionResult(String screenName) {
+    public ScreenAssertionResult(String screenName) {
         this.screenName = screenName;
     }
 

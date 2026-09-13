@@ -12,7 +12,7 @@ import AndroidTV.V3.services.KeypadStateService;
 import AndroidTV.V3.services.SSIDService;
 import AndroidTV.V3.utils.AssertionRunner;
 import AndroidTV.V3.utils.TestLogger;
-import AndroidTV.V3.validators.ADBScreenAssertionResult;
+import AndroidTV.V3.validators.ScreenAssertionResult;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,7 +89,7 @@ public class LoginScreenAssertion {
                     TestConfig.LOGS_DIR,
                     testStartTime);
 
-            ADBScreenAssertionResult result = runner.runAssertion(
+            ScreenAssertionResult result = runner.runAssertion(
                     LoginScreenProfile.get(),
                     TestConfig.CURRENT_SCREEN_DIR,
                     TestConfig.FAIL_DIR,
@@ -112,7 +112,7 @@ public class LoginScreenAssertion {
         }
     }
 
-    private void printSummary(ADBScreenAssertionResult result, String keypadDecision) {
+    private void printSummary(ScreenAssertionResult result, String keypadDecision) {
         TestLogger.log("");
         TestLogger.log("═══ FINAL TEST SUMMARY ═══");
         TestLogger.log("📌 Screen:        " + result.getScreenName());

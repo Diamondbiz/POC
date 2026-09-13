@@ -19,7 +19,7 @@ import java.io.File;
  *
  * Screen-agnostic. Reusable by any test class.
  */
-public class ADBScreenValidator {
+public class ScreenValidator {
 
     private final DeviceController device;
     private final XmlParser parser;
@@ -28,12 +28,12 @@ public class ADBScreenValidator {
     private final String screenshotRootFolder;    // e.g. "Screens/Current screen"
     private final String failRootFolder;          // e.g. "Screens/Fail"
 
-    public ADBScreenValidator(DeviceController device,
-                              XmlParser parser,
-                              String xmlFolderPath,
-                              String testStartTime,
-                              String screenshotRootFolder,
-                              String failRootFolder) {
+    public ScreenValidator(DeviceController device,
+                           XmlParser parser,
+                           String xmlFolderPath,
+                           String testStartTime,
+                           String screenshotRootFolder,
+                           String failRootFolder) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;
@@ -80,13 +80,13 @@ public class ADBScreenValidator {
      *  - crops + compares each crop
      * Never throws. Returns a result.
      */
-    public ADBScreenAssertionResult assertAll(ScreenProfile profile) throws Exception {
+    public ScreenAssertionResult assertAll(ScreenProfile profile) throws Exception {
         TestLogger.log("");
         TestLogger.log("═══════════════════════════════════════════════════");
         TestLogger.log("🔍 ASSERTING SCREEN: " + profile.getName());
         TestLogger.log("═══════════════════════════════════════════════════");
 
-        ADBScreenAssertionResult result = new ADBScreenAssertionResult(profile.getName());
+        ScreenAssertionResult result = new ScreenAssertionResult(profile.getName());
 
         // 1. Marker
         String xml = device.getScreenXml(xmlFolderPath, testStartTime);

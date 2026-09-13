@@ -3,8 +3,8 @@ package AndroidTV.V3.utils;
 import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.profiles.ScreenProfile;
-import AndroidTV.V3.validators.ADBScreenAssertionResult;
-import AndroidTV.V3.validators.ADBScreenValidator;
+import AndroidTV.V3.validators.ScreenAssertionResult;
+import AndroidTV.V3.validators.ScreenValidator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -59,27 +59,27 @@ public class AssertionRunner {
      * @param markerTimeoutMs    max time to wait for the screen to load
      * @return                   assertion result (never null)
      */
-    public ADBScreenAssertionResult runAssertion(ScreenProfile profile,
-                                                 String screenshotRoot,
-                                                 String failRoot,
-                                                 int markerTimeoutMs) throws Exception {
+    public ScreenAssertionResult runAssertion(ScreenProfile profile,
+                                              String screenshotRoot,
+                                              String failRoot,
+                                              int markerTimeoutMs) throws Exception {
 
         TestLogger.log("");
         TestLogger.log("═══════════════════════════════════════════════════");
         TestLogger.log("🧪 RUNNING ASSERTION FOR: " + profile.getName());
         TestLogger.log("═══════════════════════════════════════════════════");
 
-        ADBScreenValidator validator = new ADBScreenValidator(
+        ScreenValidator validator = new ScreenValidator(
                 device, parser, xmlFolderPath, testStartTime, screenshotRoot, failRoot);
 
-        ADBScreenAssertionResult result;
+        ScreenAssertionResult result;
 
         // 1. Wait for the marker
         boolean markerSeen = validator.waitUntilMarkerVisible(profile, markerTimeoutMs);
 
         if (!markerSeen) {
             // Short-circuit: screen never appeared.
-            result = new ADBScreenAssertionResult(profile.getName());
+            result = new ScreenAssertionResult(profile.getName());
             result.setMarkerPresent(false);
             result.setFailureReason("Marker '" + profile.getMarkerValue() +
                     "' did not appear within " + markerTimeoutMs + " ms");
@@ -109,7 +109,7 @@ public class AssertionRunner {
     // ==================== JSON BUILDER ====================
 
     private ObjectNode buildJson(ScreenProfile profile,
-                                 ADBScreenAssertionResult result,
+                                 ScreenAssertionResult result,
                                  String screenshotRoot,
                                  String failRoot) {
 
@@ -131,7 +131,7 @@ public class AssertionRunner {
 
         // Crops
         ObjectNode cropsNode = ArtifactReporter.newJsonObject();
-        for (java.util.Map.Entry<String, ADBScreenAssertionResult.CropResult> e
+        for (java.util.Map.Entry<String, ScreenAssertionResult.CropResult> e
                 : result.getCropResults().entrySet()) {
             ObjectNode one = ArtifactReporter.newJsonObject();
             one.put("passed", e.getValue().isPassed());
