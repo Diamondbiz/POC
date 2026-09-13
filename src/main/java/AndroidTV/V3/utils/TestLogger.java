@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ADBTestLogger {
+public class TestLogger {
     private static PrintWriter writer;
     private static String logFileName;
 

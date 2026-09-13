@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * Reusable by any test/validator. No dependency on specific screens.
  */
-public class ADBArtifactReporter {
+public class ArtifactReporter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -30,9 +30,9 @@ public class ADBArtifactReporter {
         if (!dir.exists()) dir.mkdirs();
 
         String encoded = folderPath.replace(" ", "%20");
-        ADBTestLogger.log("   📁 " + label + ":");
-        ADBTestLogger.log("      🔗 file://" + encoded);
-        ADBTestLogger.log("      💻 open \"" + folderPath + "\"");
+        TestLogger.log("   📁 " + label + ":");
+        TestLogger.log("      🔗 file://" + encoded);
+        TestLogger.log("      💻 open \"" + folderPath + "\"");
     }
 
     /**
@@ -40,16 +40,16 @@ public class ADBArtifactReporter {
      */
     public static void printFileLink(String label, String filePath) {
         String encoded = filePath.replace(" ", "%20");
-        ADBTestLogger.log("   📄 " + label + ":");
-        ADBTestLogger.log("      🔗 file://" + encoded);
-        ADBTestLogger.log("      💻 open \"" + filePath + "\"");
+        TestLogger.log("   📄 " + label + ":");
+        TestLogger.log("      🔗 file://" + encoded);
+        TestLogger.log("      💻 open \"" + filePath + "\"");
 
         File parent = new File(filePath).getParentFile();
         if (parent != null) {
             String parentPath = parent.getAbsolutePath();
             String parentEncoded = parentPath.replace(" ", "%20");
-            ADBTestLogger.log("      📁 Folder: file://" + parentEncoded);
-            ADBTestLogger.log("      💻 open \"" + parentPath + "\"");
+            TestLogger.log("      📁 Folder: file://" + parentEncoded);
+            TestLogger.log("      💻 open \"" + parentPath + "\"");
         }
     }
 
@@ -85,7 +85,7 @@ public class ADBArtifactReporter {
 
             printFileLink("JSON log", outputPath);
         } catch (Exception e) {
-            ADBTestLogger.logWarning("⚠️ Could not write JSON log: " + e.getMessage());
+            TestLogger.logWarning("⚠️ Could not write JSON log: " + e.getMessage());
         }
     }
 

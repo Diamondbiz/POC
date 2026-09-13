@@ -2,7 +2,7 @@ package AndroidTV.V3.Tests.User.PhoneFieldValidation;
 
 import AndroidTV.V3.config.ADBRouterConfig;
 import AndroidTV.V3.Models.Router;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.TestLogger;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -55,69 +55,69 @@ public class ADBInValidPhoneNumber {
 
     public void runTest() {
         testStartTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        ADBTestLogger.init("ADBInValidPhoneNumber");
+        TestLogger.init("ADBInValidPhoneNumber");
 
         try {
-            ADBTestLogger.log("═══════════════════════════════════════════════════");
-            ADBTestLogger.log("🚫 INVALID PHONE NUMBER TEST - PURE ADB");
-            ADBTestLogger.log("═══════════════════════════════════════════════════");
+            TestLogger.log("═══════════════════════════════════════════════════");
+            TestLogger.log("🚫 INVALID PHONE NUMBER TEST - PURE ADB");
+            TestLogger.log("═══════════════════════════════════════════════════");
 
-            ADBTestLogger.logStep("1", "Connecting to device via ADB");
+            TestLogger.logStep("1", "Connecting to device via ADB");
             connectDevice();
 
-            ADBTestLogger.logStep("2", "Printing current SSID and validating against router list");
+            TestLogger.logStep("2", "Printing current SSID and validating against router list");
             printAndValidateSSID();
 
-            ADBTestLogger.logStep("3", "Pressing HOME and opening HOT app");
+            TestLogger.logStep("3", "Pressing HOME and opening HOT app");
             pressHome();
             launchApp();
 
-            ADBTestLogger.logStep("4", "Waiting for Login screen to load");
+            TestLogger.logStep("4", "Waiting for Login screen to load");
             waitForAppToLoad();
 
-            ADBTestLogger.logStep("5", "Entering INVALID phone number: 0543501322");
+            TestLogger.logStep("5", "Entering INVALID phone number: 0543501322");
             String invalidPhoneNumber = "0543501322";
             enterPhoneNumber(invalidPhoneNumber);
 
-            ADBTestLogger.logStep("6", "Logging phone number in field (NO FAILURE EXPECTED)");
+            TestLogger.logStep("6", "Logging phone number in field (NO FAILURE EXPECTED)");
             String actualPhone = getPhoneNumberFromField();
-            ADBTestLogger.log("   📋 Phone number in field: '" + actualPhone + "'");
+            TestLogger.log("   📋 Phone number in field: '" + actualPhone + "'");
             // Do NOT fail here! It's okay if it doesn't match the valid phone number.
-            ADBTestLogger.log("   ℹ️ (This is expected to be different from valid number 0543501323)");
+            TestLogger.log("   ℹ️ (This is expected to be different from valid number 0543501323)");
 
-            ADBTestLogger.logStep("7", "Pressing 'התחבר' (OK) - button is already focused");
+            TestLogger.logStep("7", "Pressing 'התחבר' (OK) - button is already focused");
             pressOkButton();
             Thread.sleep(3000);
 
-            ADBTestLogger.logStep("8", "Waiting for INVALID ERROR SCREEN (710)");
+            TestLogger.logStep("8", "Waiting for INVALID ERROR SCREEN (710)");
             waitForErrorScreen();
 
-            ADBTestLogger.logStep("9", "Printing all elements found on error screen");
+            TestLogger.logStep("9", "Printing all elements found on error screen");
             printErrorScreenElements();
 
-            ADBTestLogger.logStep("10", "Taking screenshot and comparing to expected Error screen");
+            TestLogger.logStep("10", "Taking screenshot and comparing to expected Error screen");
             File currentScreenshot = takeScreenshotFile();
             validateErrorScreen(currentScreenshot);
 
-            ADBTestLogger.logStep("11", "Checking for OTP screen (should NOT appear)");
+            TestLogger.logStep("11", "Checking for OTP screen (should NOT appear)");
             if (isOTPScreenPresent()) {
-                ADBTestLogger.logError("❌ USER ABUSE POLICY FAILED: OTP screen appeared with invalid phone number!");
+                TestLogger.logError("❌ USER ABUSE POLICY FAILED: OTP screen appeared with invalid phone number!");
                 throw new RuntimeException("Test failed user abuse policy: OTP screen appeared with invalid number!");
             } else {
-                ADBTestLogger.logSuccess("✅ No OTP screen appeared (correct behavior for invalid number)");
+                TestLogger.logSuccess("✅ No OTP screen appeared (correct behavior for invalid number)");
             }
 
-            ADBTestLogger.logSuccess("✅ INVALID PHONE NUMBER TEST PASSED!");
+            TestLogger.logSuccess("✅ INVALID PHONE NUMBER TEST PASSED!");
             printResultsSummary(true);
 
         } catch (Exception e) {
-            ADBTestLogger.logError("❌ Test failed: " + e.getMessage());
+            TestLogger.logError("❌ Test failed: " + e.getMessage());
             takeScreenshot("test_failure");
             savePageSource("test_failure");
             printResultsSummary(false);
             System.exit(1);
         } finally {
-            ADBTestLogger.close();
+            TestLogger.close();
         }
     }
 
@@ -125,19 +125,19 @@ public class ADBInValidPhoneNumber {
 
     private void printAndValidateSSID() throws Exception {
         String ssid = getCurrentSSID();
-        ADBTestLogger.log("   📶 Current SSID: " + ssid);
+        TestLogger.log("   📶 Current SSID: " + ssid);
 
         Router router = ADBRouterConfig.getRouterBySSID(ssid);
         if (router != null) {
-            ADBTestLogger.log("   ✅ Router found in config: " + router.getSsid());
-            ADBTestLogger.log("   ✅ Valid phone number for this router: " + router.getValidPhoneNumber());
+            TestLogger.log("   ✅ Router found in config: " + router.getSsid());
+            TestLogger.log("   ✅ Valid phone number for this router: " + router.getValidPhoneNumber());
             if (router.getValidPhoneNumber().equals("0543501323")) {
-                ADBTestLogger.logSuccess("✅ SSID matched. Router is QA BLUE-SKY 5Mhz");
+                TestLogger.logSuccess("✅ SSID matched. Router is QA BLUE-SKY 5Mhz");
             } else {
-                ADBTestLogger.logWarning("⚠️ Router found but valid phone number differs");
+                TestLogger.logWarning("⚠️ Router found but valid phone number differs");
             }
         } else {
-            ADBTestLogger.logWarning("⚠️ Router SSID not found in config (case mismatch may exist): " + ssid);
+            TestLogger.logWarning("⚠️ Router SSID not found in config (case mismatch may exist): " + ssid);
         }
     }
 
@@ -175,21 +175,21 @@ public class ADBInValidPhoneNumber {
     }
 
     private void connectDevice() throws Exception {
-        ADBTestLogger.log("   🔌 Connecting to device: " + deviceUDID);
+        TestLogger.log("   🔌 Connecting to device: " + deviceUDID);
         runCommand("adb", "connect", deviceUDID);
-        ADBTestLogger.logSuccess("✅ Device connected");
+        TestLogger.logSuccess("✅ Device connected");
     }
 
     private void pressHome() throws Exception {
-        ADBTestLogger.log("   📱 Pressing HOME");
+        TestLogger.log("   📱 Pressing HOME");
         runCommand("adb", "-s", deviceUDID, "shell", "input", "keyevent", "3");
         Thread.sleep(1000);
     }
 
     private void launchApp() throws Exception {
-        ADBTestLogger.log("   🚀 Clicking HOT icon (DPAD_CENTER)");
+        TestLogger.log("   🚀 Clicking HOT icon (DPAD_CENTER)");
         runCommand("adb", "-s", deviceUDID, "shell", "input", "keyevent", "23");
-        ADBTestLogger.logSuccess("✅ HOT app launched");
+        TestLogger.logSuccess("✅ HOT app launched");
         Thread.sleep(8000);
     }
 
@@ -199,9 +199,9 @@ public class ADBInValidPhoneNumber {
     }
 
     private void pressOkButton() throws Exception {
-        ADBTestLogger.log("   ✅ 'התחבר' button is already focused. Pressing OK (DPAD_CENTER)...");
+        TestLogger.log("   ✅ 'התחבר' button is already focused. Pressing OK (DPAD_CENTER)...");
         runCommand("adb", "-s", deviceUDID, "shell", "input", "keyevent", "23");
-        ADBTestLogger.logSuccess("✅ OK pressed");
+        TestLogger.logSuccess("✅ OK pressed");
     }
 
     private String getScreenXml() throws Exception {
@@ -226,9 +226,9 @@ public class ADBInValidPhoneNumber {
             runCommand("adb", "-s", deviceUDID, "shell", "screencap", "-p", remotePath);
             String localPath = failFolderPath + "/" + name + "_" + testStartTime + ".png";
             runCommand("adb", "-s", deviceUDID, "pull", remotePath, localPath);
-            ADBTestLogger.log("📸 Screenshot saved to: " + new File(localPath).getAbsolutePath());
+            TestLogger.log("📸 Screenshot saved to: " + new File(localPath).getAbsolutePath());
         } catch (Exception e) {
-            ADBTestLogger.logWarning("⚠️ Could not take screenshot: " + e.getMessage());
+            TestLogger.logWarning("⚠️ Could not take screenshot: " + e.getMessage());
         }
     }
 
@@ -238,22 +238,22 @@ public class ADBInValidPhoneNumber {
             runCommand("adb", "-s", deviceUDID, "shell", "uiautomator", "dump", remoteDumpPath);
             String localPath = "xml/" + name + "_" + testStartTime + ".xml";
             runCommand("adb", "-s", deviceUDID, "pull", remoteDumpPath, localPath);
-            ADBTestLogger.log("📄 Page Source: " + new File(localPath).getAbsolutePath());
+            TestLogger.log("📄 Page Source: " + new File(localPath).getAbsolutePath());
         } catch (Exception e) {
-            ADBTestLogger.logWarning("⚠️ Could not save page source: " + e.getMessage());
+            TestLogger.logWarning("⚠️ Could not save page source: " + e.getMessage());
         }
     }
 
     // ==================== UI INTERACTION ====================
 
     private void waitForAppToLoad() throws Exception {
-        ADBTestLogger.log("⏳ Waiting for Login screen to load...");
+        TestLogger.log("⏳ Waiting for Login screen to load...");
         long startTime = System.currentTimeMillis();
         long timeout = 60000;
         while (System.currentTimeMillis() - startTime < timeout) {
             String pageSource = getScreenXml();
             if (pageSource.contains("txtUserCellPhone") && pageSource.contains("dvbtnConnect") && pageSource.contains("mod_keyboard")) {
-                ADBTestLogger.logSuccess("✅ Login screen loaded");
+                TestLogger.logSuccess("✅ Login screen loaded");
                 return;
             }
             Thread.sleep(1000);
@@ -262,7 +262,7 @@ public class ADBInValidPhoneNumber {
     }
 
     private void enterPhoneNumber(String phoneNumber) throws Exception {
-        ADBTestLogger.log("📱 Entering phone number: " + phoneNumber);
+        TestLogger.log("📱 Entering phone number: " + phoneNumber);
         int currentRow = 1;
         int currentCol = 1;
 
@@ -282,7 +282,7 @@ public class ADBInValidPhoneNumber {
             pressDpad(23);
             Thread.sleep(200);
         }
-        ADBTestLogger.logSuccess("✅ Phone number entered: " + phoneNumber);
+        TestLogger.logSuccess("✅ Phone number entered: " + phoneNumber);
     }
 
     private String getPhoneNumberFromField() throws Exception {
@@ -296,7 +296,7 @@ public class ADBInValidPhoneNumber {
     }
 
     private void waitForErrorScreen() throws Exception {
-        ADBTestLogger.log("⏳ Waiting for error screen (710)...");
+        TestLogger.log("⏳ Waiting for error screen (710)...");
         long startTime = System.currentTimeMillis();
         long timeout = 30000;
 
@@ -304,7 +304,7 @@ public class ADBInValidPhoneNumber {
             String pageSource = getScreenXml();
             if (pageSource.contains("מספר הנייד שהוזן אינו תואם את הפרטים הקיימים במערכת") ||
                     pageSource.contains("710")) {
-                ADBTestLogger.logSuccess("✅ Error screen detected with 710 error!");
+                TestLogger.logSuccess("✅ Error screen detected with 710 error!");
                 return;
             }
             Thread.sleep(1000);
@@ -314,31 +314,31 @@ public class ADBInValidPhoneNumber {
 
     private void printErrorScreenElements() throws Exception {
         String xml = getScreenXml();
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("📋 ERROR SCREEN - ELEMENTS FOUND");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("📋 ERROR SCREEN - ELEMENTS FOUND");
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         if (xml.contains("mod_PopupLogin_Error")) {
-            ADBTestLogger.logSuccess("   ✅ Error element found: mod_PopupLogin_Error");
+            TestLogger.logSuccess("   ✅ Error element found: mod_PopupLogin_Error");
         } else {
-            ADBTestLogger.logError("   ❌ Error element found: mod_PopupLogin_Error");
+            TestLogger.logError("   ❌ Error element found: mod_PopupLogin_Error");
         }
 
         if (xml.contains("מספר הנייד שהוזן אינו תואם את הפרטים הקיימים במערכת")) {
-            ADBTestLogger.logSuccess("   ✅ Error text found: מספר הנייד שהוזן אינו תואם את הפרטים הקיימים במערכת");
+            TestLogger.logSuccess("   ✅ Error text found: מספר הנייד שהוזן אינו תואם את הפרטים הקיימים במערכת");
         } else {
-            ADBTestLogger.logError("   ❌ Error text found: מספר הנייד שהוזן אינו תואם את הפרטים הקיימים במערכת");
+            TestLogger.logError("   ❌ Error text found: מספר הנייד שהוזן אינו תואם את הפרטים הקיימים במערכת");
         }
 
         if (xml.contains("710")) {
-            ADBTestLogger.logSuccess("   ✅ Error code found: 710");
+            TestLogger.logSuccess("   ✅ Error code found: 710");
         } else {
-            ADBTestLogger.logError("   ❌ Error code found: 710");
+            TestLogger.logError("   ❌ Error code found: 710");
         }
 
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
     }
 
     private boolean isOTPScreenPresent() throws Exception {
@@ -349,7 +349,7 @@ public class ADBInValidPhoneNumber {
     private void validateErrorScreen(File currentScreenshot) throws Exception {
         File expectedFile = new File(expectedErrorScreenPath);
         if (!expectedFile.exists()) {
-            ADBTestLogger.logWarning("⚠️ Expected error screenshot not found at: " + expectedErrorScreenPath);
+            TestLogger.logWarning("⚠️ Expected error screenshot not found at: " + expectedErrorScreenPath);
             return;
         }
 
@@ -374,13 +374,13 @@ public class ADBInValidPhoneNumber {
         }
 
         double similarity = 100.0 - ((double) mismatchedPixels / totalPixels * 100);
-        ADBTestLogger.log("📊 Error Screen Comparison: Similarity = " + String.format("%.2f", similarity) + "%");
+        TestLogger.log("📊 Error Screen Comparison: Similarity = " + String.format("%.2f", similarity) + "%");
 
         if (similarity >= 95.0) {
-            ADBTestLogger.logSuccess("✅ Error screen matches expected (710)");
+            TestLogger.logSuccess("✅ Error screen matches expected (710)");
             saveToPassFolder(currentScreenshot);
         } else {
-            ADBTestLogger.logError("❌ Error screen does NOT match expected!");
+            TestLogger.logError("❌ Error screen does NOT match expected!");
             saveToFailFolder(currentScreenshot);
             throw new RuntimeException("Error screen mismatch! Similarity: " + similarity + "%");
         }
@@ -394,9 +394,9 @@ public class ADBInValidPhoneNumber {
             if (!dir.exists()) dir.mkdirs();
             String fileName = "ADBInValidPhoneNumber_PASS_" + testStartTime + ".png";
             FileUtils.copyFile(screenshot, new File(dir, fileName));
-            ADBTestLogger.log("📸 PASS screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
+            TestLogger.log("📸 PASS screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
         } catch (IOException e) {
-            ADBTestLogger.logError("❌ Could not save pass screenshot: " + e.getMessage());
+            TestLogger.logError("❌ Could not save pass screenshot: " + e.getMessage());
         }
     }
 
@@ -406,16 +406,16 @@ public class ADBInValidPhoneNumber {
             if (!dir.exists()) dir.mkdirs();
             String fileName = "test_failure_" + testStartTime + ".png";
             FileUtils.copyFile(screenshot, new File(dir, fileName));
-            ADBTestLogger.log("📸 FAIL screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
+            TestLogger.log("📸 FAIL screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
         } catch (IOException e) {
-            ADBTestLogger.logError("❌ Could not save fail screenshot: " + e.getMessage());
+            TestLogger.logError("❌ Could not save fail screenshot: " + e.getMessage());
         }
     }
 
     private void printResultsSummary(boolean passed) {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══ TEST RESULTS SUMMARY ═══");
-        ADBTestLogger.log("📌 Status: " + (passed ? "✅ PASSED" : "❌ FAILED"));
-        ADBTestLogger.log("🕐 Timestamp: " + testStartTime);
+        TestLogger.log("");
+        TestLogger.log("═══ TEST RESULTS SUMMARY ═══");
+        TestLogger.log("📌 Status: " + (passed ? "✅ PASSED" : "❌ FAILED"));
+        TestLogger.log("🕐 Timestamp: " + testStartTime);
     }
 }

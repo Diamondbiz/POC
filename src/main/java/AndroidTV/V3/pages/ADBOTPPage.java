@@ -3,7 +3,7 @@ package AndroidTV.V3.pages;
 import AndroidTV.V3.core.ADBDeviceController;
 import AndroidTV.V3.core.ADBXmlParser;
 import AndroidTV.V3.services.KeypadStateService;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.TestLogger;
 
 import java.util.Map;
 
@@ -48,22 +48,22 @@ public class ADBOTPPage {
     }
 
     public void enterOTP(Map<String, int[]> keypadPositions, String otp) throws Exception {
-        ADBTestLogger.log("📱 Entering OTP: " + otp);
+        TestLogger.log("📱 Entering OTP: " + otp);
 
         String detected = keypadStateService.detectSelectedDigit();
 
         int[] startPos;
         if (detected == null || detected.isEmpty()) {
-            ADBTestLogger.logWarning("   ⚠️ Could not detect selected digit — defaulting to '0'");
+            TestLogger.logWarning("   ⚠️ Could not detect selected digit — defaulting to '0'");
             startPos = keypadPositions.get("0");
         } else {
             startPos = keypadPositions.get(detected);
             if (startPos == null) {
-                ADBTestLogger.logWarning("   ⚠️ Detected '" + detected +
+                TestLogger.logWarning("   ⚠️ Detected '" + detected +
                         "' not in keypad map — defaulting to '0'");
                 startPos = keypadPositions.get("0");
             } else {
-                ADBTestLogger.log("   🎯 Using starting digit: " + detected);
+                TestLogger.log("   🎯 Using starting digit: " + detected);
             }
         }
 
@@ -87,7 +87,7 @@ public class ADBOTPPage {
             Thread.sleep(200);
         }
 
-        ADBTestLogger.logSuccess("✅ OTP entered: " + otp);
+        TestLogger.logSuccess("✅ OTP entered: " + otp);
     }
 
     public void pressVerify() throws Exception {

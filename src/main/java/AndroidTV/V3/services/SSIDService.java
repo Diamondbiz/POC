@@ -4,7 +4,7 @@ import AndroidTV.V3.Models.Router;
 import AndroidTV.V3.config.ADBRouterConfig;
 import AndroidTV.V3.config.ADBTestConfig;
 import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.TestLogger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -145,33 +145,33 @@ public class SSIDService {
     public void logRouterCheck() throws Exception {
         RouterInfo info = getCurrentRouterInfo();
 
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("📶 ROUTER & PHONE NUMBER CHECK");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("   Current SSID:       " + info.ssid);
-        ADBTestLogger.log("   Expected phone:     " +
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("📶 ROUTER & PHONE NUMBER CHECK");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("   Current SSID:       " + info.ssid);
+        TestLogger.log("   Expected phone:     " +
                 (info.expectedPhone.isEmpty() ? "(not defined)" : info.expectedPhone));
-        ADBTestLogger.log("   Test will use:      " + info.phoneToUse);
+        TestLogger.log("   Test will use:      " + info.phoneToUse);
 
         switch (info.status) {
             case "MATCH":
-                ADBTestLogger.logSuccess("   Status:             ✅ MATCH — using the router's configured phone number");
+                TestLogger.logSuccess("   Status:             ✅ MATCH — using the router's configured phone number");
                 break;
             case "FALLBACK_ROUTER_NOT_FOUND":
-                ADBTestLogger.logWarning("   Status:             ⚠️ FALLBACK — SSID not in ADBRouterConfig");
-                ADBTestLogger.logWarning("                       Using default REGULAR_PHONE_NUMBER");
+                TestLogger.logWarning("   Status:             ⚠️ FALLBACK — SSID not in ADBRouterConfig");
+                TestLogger.logWarning("                       Using default REGULAR_PHONE_NUMBER");
                 break;
             case "FALLBACK_NO_PHONE_DEFINED":
-                ADBTestLogger.logWarning("   Status:             ⚠️ FALLBACK — router found but no validPhoneNumber set");
-                ADBTestLogger.logWarning("                       Using default REGULAR_PHONE_NUMBER");
+                TestLogger.logWarning("   Status:             ⚠️ FALLBACK — router found but no validPhoneNumber set");
+                TestLogger.logWarning("                       Using default REGULAR_PHONE_NUMBER");
                 break;
             default:
-                ADBTestLogger.logWarning("   Status:             ⚠️ Unknown status");
+                TestLogger.logWarning("   Status:             ⚠️ Unknown status");
         }
 
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
     }
 
     /**
@@ -188,11 +188,11 @@ public class SSIDService {
             return; // matches — no warning
         }
 
-        ADBTestLogger.log("");
-        ADBTestLogger.logWarning("⚠️ PHONE NUMBER MISMATCH");
-        ADBTestLogger.logWarning("   Router expects: " + info.expectedPhone);
-        ADBTestLogger.logWarning("   You are using:  " + insertedPhone);
-        ADBTestLogger.logWarning("   Proceeding anyway — verify this is intentional.");
-        ADBTestLogger.log("");
+        TestLogger.log("");
+        TestLogger.logWarning("⚠️ PHONE NUMBER MISMATCH");
+        TestLogger.logWarning("   Router expects: " + info.expectedPhone);
+        TestLogger.logWarning("   You are using:  " + insertedPhone);
+        TestLogger.logWarning("   Proceeding anyway — verify this is intentional.");
+        TestLogger.log("");
     }
 }

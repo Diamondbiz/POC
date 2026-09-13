@@ -4,7 +4,7 @@ import AndroidTV.V3.config.ADBTestConfig;
 import AndroidTV.V3.core.ADBDeviceController;
 import AndroidTV.V3.core.ADBScreenState;
 import AndroidTV.V3.core.ADBXmlParser;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.TestLogger;
 
 /**
  * State enforcer layer.
@@ -46,20 +46,20 @@ public class ADBPreconditions {
      * Ensures the app process is running AND reliably foreground.
      */
     public void ensureAppRunning() throws Exception {
-        ADBTestLogger.log("🔧 ensureAppRunning");
+        TestLogger.log("🔧 ensureAppRunning");
 
         boolean running = state.isAppRunning();
         boolean foreground = running && state.isAppForegroundReliable();
 
         if (running && foreground) {
-            ADBTestLogger.log("   ↪ Already running and foreground — skipping");
+            TestLogger.log("   ↪ Already running and foreground — skipping");
             return;
         }
 
         if (running) {
-            ADBTestLogger.log("   ↪ Process alive but not foreground — bringing to front");
+            TestLogger.log("   ↪ Process alive but not foreground — bringing to front");
         } else {
-            ADBTestLogger.log("   ↪ Not running — launching");
+            TestLogger.log("   ↪ Not running — launching");
         }
 
         device.bringAppToForeground(appPackage);
@@ -69,19 +69,19 @@ public class ADBPreconditions {
                     ADBTestConfig.FOREGROUND_WAIT_TIMEOUT_MS + " ms");
         }
 
-        ADBTestLogger.log("   ↪ App is now foreground");
+        TestLogger.log("   ↪ App is now foreground");
     }
 
     /**
      * Force-stops the app process.
      */
     public void ensureAppStopped() throws Exception {
-        ADBTestLogger.log("🔧 ensureAppStopped");
+        TestLogger.log("🔧 ensureAppStopped");
         if (!state.isAppRunning()) {
-            ADBTestLogger.log("   ↪ Already stopped — skipping");
+            TestLogger.log("   ↪ Already stopped — skipping");
             return;
         }
-        ADBTestLogger.log("   ↪ Running — force-stopping");
+        TestLogger.log("   ↪ Running — force-stopping");
         device.forceStopApp(appPackage);
         Thread.sleep(1000);
         if (state.isAppRunning()) {
@@ -93,7 +93,7 @@ public class ADBPreconditions {
      * Force-stops then relaunches.
      */
     public void ensureAppRestarted() throws Exception {
-        ADBTestLogger.log("🔧 ensureAppRestarted");
+        TestLogger.log("🔧 ensureAppRestarted");
         ensureAppStopped();
         device.bringAppToForeground(appPackage);
         if (!waitForAppForegroundReliable(ADBTestConfig.FOREGROUND_WAIT_TIMEOUT_MS)) {
@@ -107,12 +107,12 @@ public class ADBPreconditions {
      * Ensures the device is on the login screen.
      */
     public void ensureOnLoginScreen() throws Exception {
-        ADBTestLogger.log("🔧 ensureOnLoginScreen");
+        TestLogger.log("🔧 ensureOnLoginScreen");
 
         ensureAppRunning();
 
         if (state.isOnLoginScreen()) {
-            ADBTestLogger.log("   ↪ Already on login screen — skipping");
+            TestLogger.log("   ↪ Already on login screen — skipping");
             return;
         }
 
@@ -122,21 +122,21 @@ public class ADBPreconditions {
         }
 
         if (waitForScreen("txtUserCellPhone", ADBTestConfig.LOGIN_SCREEN_TIMEOUT_MS)) {
-            ADBTestLogger.log("   ↪ Login screen appeared after waiting");
+            TestLogger.log("   ↪ Login screen appeared after waiting");
             return;
         }
 
         // Diagnostics before failing
-        ADBTestLogger.logError("   ❌ Login screen did not appear — capturing diagnostics");
+        TestLogger.logError("   ❌ Login screen did not appear — capturing diagnostics");
         try {
             device.takeScreenshot(ADBTestConfig.FAIL_DIR, testStartTime);
             String xml = device.getScreenXml(xmlFolderPath, testStartTime);
-            ADBTestLogger.log("   Foreground package (dumpsys): " + device.getForegroundPackage());
-            ADBTestLogger.log("   Root package (UI dump):       " + parser.getRootPackage(xml));
-            ADBTestLogger.log("   Screen label:                 " + state.getCurrentScreenLabel());
-            ADBTestLogger.log("   XML length: " + xml.length());
+            TestLogger.log("   Foreground package (dumpsys): " + device.getForegroundPackage());
+            TestLogger.log("   Root package (UI dump):       " + parser.getRootPackage(xml));
+            TestLogger.log("   Screen label:                 " + state.getCurrentScreenLabel());
+            TestLogger.log("   XML length: " + xml.length());
         } catch (Exception e) {
-            ADBTestLogger.logWarning("   ⚠️ Diagnostic capture failed: " + e.getMessage());
+            TestLogger.logWarning("   ⚠️ Diagnostic capture failed: " + e.getMessage());
         }
 
         throw new RuntimeException("Could not reach login screen within " +
@@ -147,17 +147,17 @@ public class ADBPreconditions {
      * Ensures the device is on the OTP screen.
      */
     public void ensureOnOtpScreen(String phoneNumber) throws Exception {
-        ADBTestLogger.log("🔧 ensureOnOtpScreen");
+        TestLogger.log("🔧 ensureOnOtpScreen");
 
         ensureAppRunning();
 
         if (state.isOnOtpScreen()) {
-            ADBTestLogger.log("   ↪ Already on OTP screen — skipping");
+            TestLogger.log("   ↪ Already on OTP screen — skipping");
             return;
         }
 
         if (state.isOnLoginScreen()) {
-            ADBTestLogger.log("   ↪ On login screen — entering phone number");
+            TestLogger.log("   ↪ On login screen — entering phone number");
             loginFlow.enterPhoneNumber(phoneNumber);
             loginFlow.pressConnect();
             loginFlow.waitForOTP();
@@ -186,38 +186,38 @@ public class ADBPreconditions {
      * Ensures the user is fully logged in.
      */
     public void ensureLoggedIn(String phoneNumber, String otp) throws Exception {
-        ADBTestLogger.log("🔧 ensureLoggedIn");
+        TestLogger.log("🔧 ensureLoggedIn");
 
         ensureAppRunning();
 
         if (state.isLoggedIn()) {
-            ADBTestLogger.log("   ↪ Already logged in — skipping");
+            TestLogger.log("   ↪ Already logged in — skipping");
             return;
         }
 
         ensureOnOtpScreen(phoneNumber);
-        ADBTestLogger.log("   ↪ On OTP screen — entering OTP code");
+        TestLogger.log("   ↪ On OTP screen — entering OTP code");
         otpService.enterOTP(otp);
         otpService.pressVerify();
 
         if (!waitUntilLoggedIn(30000)) {
             throw new RuntimeException("Login did not complete within 30s after entering OTP");
         }
-        ADBTestLogger.log("   ↪ Logged in successfully");
+        TestLogger.log("   ↪ Logged in successfully");
     }
 
     // ==================== GENERIC ====================
 
     public void ensureOnScreen(String markerResourceId, int timeoutMs) throws Exception {
-        ADBTestLogger.log("🔧 ensureOnScreen(" + markerResourceId + ")");
+        TestLogger.log("🔧 ensureOnScreen(" + markerResourceId + ")");
 
         if (state.isOnScreen(markerResourceId)) {
-            ADBTestLogger.log("   ↪ Already on screen — skipping");
+            TestLogger.log("   ↪ Already on screen — skipping");
             return;
         }
 
         if (waitForScreen(markerResourceId, timeoutMs)) {
-            ADBTestLogger.log("   ↪ Screen appeared after waiting");
+            TestLogger.log("   ↪ Screen appeared after waiting");
             return;
         }
 

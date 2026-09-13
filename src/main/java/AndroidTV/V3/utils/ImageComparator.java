@@ -11,7 +11,7 @@ import java.io.IOException;
  *
  * Reusable by any validator that needs to compare a crop or full screen against a baseline.
  */
-public class ADBImageComparator {
+public class ImageComparator {
 
     public static final int DEFAULT_PIXEL_TOLERANCE = 10;
     public static final double DEFAULT_SIMILARITY_THRESHOLD = 95.0;

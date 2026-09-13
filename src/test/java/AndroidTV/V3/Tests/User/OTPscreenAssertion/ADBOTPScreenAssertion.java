@@ -2,7 +2,7 @@ package AndroidTV.V3.Tests.User.OTPscreenAssertion;
 
 import AndroidTV.V3.config.ADBRouterConfig;
 import AndroidTV.V3.Models.Router;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.TestLogger;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -99,58 +99,58 @@ public class ADBOTPScreenAssertion {
 
     public void runTest() {
         testStartTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        ADBTestLogger.init("ADBValidPhoneNumber");
+        TestLogger.init("ADBValidPhoneNumber");
 
         try {
-            ADBTestLogger.log("═══════════════════════════════════════════════════");
-            ADBTestLogger.log("📱 VALID PHONE NUMBER TEST - PURE ADB");
-            ADBTestLogger.log("═══════════════════════════════════════════════════");
+            TestLogger.log("═══════════════════════════════════════════════════");
+            TestLogger.log("📱 VALID PHONE NUMBER TEST - PURE ADB");
+            TestLogger.log("═══════════════════════════════════════════════════");
 
-            ADBTestLogger.logStep("1", "Connecting to device via ADB");
+            TestLogger.logStep("1", "Connecting to device via ADB");
             connectDevice();
 
-            ADBTestLogger.logStep("2", "Printing current SSID and validating against router list");
+            TestLogger.logStep("2", "Printing current SSID and validating against router list");
             printAndValidateSSID();
 
-            ADBTestLogger.logStep("3", "Pressing HOME and opening HOT app");
+            TestLogger.logStep("3", "Pressing HOME and opening HOT app");
             pressHome();
             launchApp();
 
-            ADBTestLogger.logStep("4", "Waiting for Login screen to load and validating initial state");
+            TestLogger.logStep("4", "Waiting for Login screen to load and validating initial state");
             waitForAppToLoad();
             validateInitialLoginScreenState();
 
-            ADBTestLogger.logStep("5", "Detecting which digit is currently selected (ALWAYS via Image + XML)");
+            TestLogger.logStep("5", "Detecting which digit is currently selected (ALWAYS via Image + XML)");
             String detectedStartDigit = detectDefaultSelectedDigit();
-            ADBTestLogger.log("   🎯 Detected starting digit: " + detectedStartDigit);
+            TestLogger.log("   🎯 Detected starting digit: " + detectedStartDigit);
 
-            ADBTestLogger.logStep("6", "Entering valid phone number");
+            TestLogger.logStep("6", "Entering valid phone number");
             String expectedPhoneNumber = "0543501323";
             enterPhoneNumber(expectedPhoneNumber, detectedStartDigit);
 
-            ADBTestLogger.logStep("7", "Validating phone number via XML AND crop comparison");
+            TestLogger.logStep("7", "Validating phone number via XML AND crop comparison");
             validatePhoneNumberAfterEntry(expectedPhoneNumber);
 
-            ADBTestLogger.logStep("8", "Verifying 'התחבר' button is selected (white highlighted)");
+            TestLogger.logStep("8", "Verifying 'התחבר' button is selected (white highlighted)");
             verifyConnectButtonSelected();
 
-            ADBTestLogger.logStep("9", "Pressing 'התחבר' button");
+            TestLogger.logStep("9", "Pressing 'התחבר' button");
             pressConnectButton();
 
-            ADBTestLogger.logStep("10", "Validating OTP screen elements and printing them");
+            TestLogger.logStep("10", "Validating OTP screen elements and printing them");
             validateOTPScreen();
 
-            ADBTestLogger.logSuccess("✅ VALID PHONE NUMBER TEST PASSED! OTP screen loaded successfully!");
+            TestLogger.logSuccess("✅ VALID PHONE NUMBER TEST PASSED! OTP screen loaded successfully!");
             printResultsSummary(true);
 
         } catch (Exception e) {
-            ADBTestLogger.logError("❌ Test failed: " + e.getMessage());
+            TestLogger.logError("❌ Test failed: " + e.getMessage());
             takeScreenshot("test_failure");
             savePageSource("test_failure");
             printResultsSummary(false);
             System.exit(1);
         } finally {
-            ADBTestLogger.close();
+            TestLogger.close();
         }
     }
 
@@ -169,82 +169,82 @@ public class ADBOTPScreenAssertion {
 
     private void logFileLink(String path) {
         String encodedPath = path.replace(" ", "%20");
-        ADBTestLogger.log("   🔗 file://" + encodedPath);
+        TestLogger.log("   🔗 file://" + encodedPath);
     }
 
     // ==================== VALIDATE INITIAL LOGIN SCREEN STATE ====================
 
     private void validateInitialLoginScreenState() throws Exception {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("📋 VALIDATING INITIAL LOGIN SCREEN STATE");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("📋 VALIDATING INITIAL LOGIN SCREEN STATE");
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         String phoneFieldText = getPhoneFieldTextFromXML();
-        ADBTestLogger.log("   📋 Phone field text from XML: '" + phoneFieldText + "'");
+        TestLogger.log("   📋 Phone field text from XML: '" + phoneFieldText + "'");
 
         if (phoneFieldText != null && phoneFieldText.contains("מספר נייד (הרשום במנוי)")) {
-            ADBTestLogger.logSuccess("   ✅ Phone field contains label: מספר נייד (הרשום במנוי)");
+            TestLogger.logSuccess("   ✅ Phone field contains label: מספר נייד (הרשום במנוי)");
         } else {
-            ADBTestLogger.logError("   ❌ Phone field does NOT contain expected label!");
+            TestLogger.logError("   ❌ Phone field does NOT contain expected label!");
         }
 
         boolean phoneFieldEmptyMatch = validatePhoneFieldCrop(PHONE_FIELD_EMPTY_EXPECTED, "initial_empty");
         if (phoneFieldEmptyMatch) {
-            ADBTestLogger.logSuccess("   ✅ Phone field crop matches expected empty state!");
+            TestLogger.logSuccess("   ✅ Phone field crop matches expected empty state!");
         } else {
-            ADBTestLogger.logError("   ❌ Phone field crop does NOT match expected empty state!");
+            TestLogger.logError("   ❌ Phone field crop does NOT match expected empty state!");
         }
 
         boolean buttonNotSelected = validateConnectButtonCrop(CONNECT_BUTTON_NOT_SELECTED_EXPECTED, "initial_not_selected");
         if (buttonNotSelected) {
-            ADBTestLogger.logSuccess("   ✅ Connect button is NOT selected (correct initial state)!");
+            TestLogger.logSuccess("   ✅ Connect button is NOT selected (correct initial state)!");
         } else {
-            ADBTestLogger.logError("   ❌ Connect button IS selected initially (incorrect state)!");
+            TestLogger.logError("   ❌ Connect button IS selected initially (incorrect state)!");
         }
 
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
     }
 
     // ==================== VALIDATE PHONE NUMBER AFTER ENTRY (DO NOT FAIL ON XML) ====================
 
     private void validatePhoneNumberAfterEntry(String expectedPhoneNumber) throws Exception {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("📋 VALIDATING PHONE NUMBER AFTER ENTRY");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("📋 VALIDATING PHONE NUMBER AFTER ENTRY");
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         // 1. XML check (log warning only, don't fail)
         String actualPhoneNumber = getPhoneFieldTextFromXML();
-        ADBTestLogger.log("   📋 Phone field text from XML: '" + actualPhoneNumber + "'");
+        TestLogger.log("   📋 Phone field text from XML: '" + actualPhoneNumber + "'");
 
         String cleanedActual = actualPhoneNumber != null ? actualPhoneNumber.replace("|", "").trim() : "";
         if (cleanedActual.equals(expectedPhoneNumber)) {
-            ADBTestLogger.logSuccess("   ✅ Phone number matches expected (XML): " + expectedPhoneNumber);
+            TestLogger.logSuccess("   ✅ Phone number matches expected (XML): " + expectedPhoneNumber);
         } else {
-            ADBTestLogger.logWarning("   ⚠️ Phone number does NOT match expected (XML). Continuing to crop validation...");
+            TestLogger.logWarning("   ⚠️ Phone number does NOT match expected (XML). Continuing to crop validation...");
         }
 
         // 2. Crop validation (THE DEFINITIVE CHECK)
-        ADBTestLogger.log("   🔍 Running crop validation (definitive check)...");
+        TestLogger.log("   🔍 Running crop validation (definitive check)...");
         boolean phoneFieldValidMatch = validatePhoneFieldCrop(PHONE_FIELD_VALID_EXPECTED, "valid_number");
         if (phoneFieldValidMatch) {
-            ADBTestLogger.logSuccess("   ✅ Phone field crop matches expected valid state!");
+            TestLogger.logSuccess("   ✅ Phone field crop matches expected valid state!");
         } else {
-            ADBTestLogger.logError("   ❌ Phone field crop does NOT match expected valid state!");
+            TestLogger.logError("   ❌ Phone field crop does NOT match expected valid state!");
         }
 
         // 3. Connect button check
         boolean buttonSelected = validateConnectButtonCrop(CONNECT_BUTTON_SELECTED_EXPECTED, "selected");
         if (buttonSelected) {
-            ADBTestLogger.logSuccess("   ✅ Connect button IS selected (correct state after valid number)!");
+            TestLogger.logSuccess("   ✅ Connect button IS selected (correct state after valid number)!");
         } else {
-            ADBTestLogger.logError("   ❌ Connect button is NOT selected (incorrect state after valid number)!");
+            TestLogger.logError("   ❌ Connect button is NOT selected (incorrect state after valid number)!");
         }
 
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
     }
 
     // ==================== GET PHONE FIELD TEXT FROM XML ====================
@@ -286,7 +286,7 @@ public class ADBOTPScreenAssertion {
 
             return null;
         } catch (Exception e) {
-            ADBTestLogger.logWarning("   ⚠️ Could not extract phone field text from XML: " + e.getMessage());
+            TestLogger.logWarning("   ⚠️ Could not extract phone field text from XML: " + e.getMessage());
             return null;
         }
     }
@@ -294,7 +294,7 @@ public class ADBOTPScreenAssertion {
     // ==================== VALIDATE PHONE FIELD CROP ====================
 
     private boolean validatePhoneFieldCrop(String expectedImagePath, String stateName) throws Exception {
-        ADBTestLogger.log("   🔍 Cropping phone field for validation...");
+        TestLogger.log("   🔍 Cropping phone field for validation...");
         String cropFileName = "phone_field_crop_" + stateName + "_" + testStartTime + ".png";
         String command = "TIMESTAMP=$(date +%Y%m%d_%H%M%S) && " +
                 "cd /Users/Johnny/IdeaProjects/POC && " +
@@ -313,7 +313,7 @@ public class ADBOTPScreenAssertion {
     // ==================== VALIDATE CONNECT BUTTON CROP ====================
 
     private boolean validateConnectButtonCrop(String expectedImagePath, String stateName) throws Exception {
-        ADBTestLogger.log("   🔍 Cropping connect button for validation...");
+        TestLogger.log("   🔍 Cropping connect button for validation...");
         String cropFileName = "connect_button_crop_" + stateName + "_" + testStartTime + ".png";
         String command = "TIMESTAMP=$(date +%Y%m%d_%H%M%S) && " +
                 "cd /Users/Johnny/IdeaProjects/POC && " +
@@ -332,22 +332,22 @@ public class ADBOTPScreenAssertion {
     // ==================== DETECT DEFAULT SELECTED DIGIT (ALWAYS IMAGE COMPARE) ====================
 
     private String detectDefaultSelectedDigit() throws Exception {
-        ADBTestLogger.log("   🔍 Detecting which digit is currently selected...");
-        ADBTestLogger.log("   ═══════════════════════════════════════════════════");
+        TestLogger.log("   🔍 Detecting which digit is currently selected...");
+        TestLogger.log("   ═══════════════════════════════════════════════════");
 
         // STEP 1: XML check (informational only, never decides alone)
         String xml = getScreenXml();
         boolean zeroIsNested = checkIfZeroIsNestedInXML(xml);
-        ADBTestLogger.log("   📋 XML analysis result: '0' is " + (zeroIsNested ? "NESTED (info only)" : "DIRECT (info only)"));
+        TestLogger.log("   📋 XML analysis result: '0' is " + (zeroIsNested ? "NESTED (info only)" : "DIRECT (info only)"));
 
         // STEP 2: ALWAYS create per-session folder
         String currentKeypadFolder = getCurrentKeypadStateFolder();
-        ADBTestLogger.log("   📁 Per-session Keypad digits state folder: " + currentKeypadFolder);
+        TestLogger.log("   📁 Per-session Keypad digits state folder: " + currentKeypadFolder);
         logFileLink(currentKeypadFolder);
 
         // STEP 3: Capture screenshot
         String screenshotPath = captureFreshScreenshot();
-        ADBTestLogger.log("   📸 Fresh screenshot saved to: " + screenshotPath);
+        TestLogger.log("   📸 Fresh screenshot saved to: " + screenshotPath);
         logFileLink(screenshotPath);
 
         // STEP 4: Compare every key
@@ -355,17 +355,17 @@ public class ADBOTPScreenAssertion {
         String imageDetectedDigit = null;
 
         for (String key : allKeys) {
-            ADBTestLogger.log("");
-            ADBTestLogger.log("   🔍 Checking key: '" + key + "'");
+            TestLogger.log("");
+            TestLogger.log("   🔍 Checking key: '" + key + "'");
 
             int[] pos = KEY_DIGIT_SCREEN_POSITIONS.get(key);
             if (pos == null) {
-                ADBTestLogger.logWarning("   ⚠️ No position defined for key: '" + key + "'");
+                TestLogger.logWarning("   ⚠️ No position defined for key: '" + key + "'");
                 continue;
             }
 
             String currentCropPath = cropKeyFromScreenshot(screenshotPath, key, currentKeypadFolder);
-            ADBTestLogger.log("   📸 Current key crop saved to: " + currentCropPath);
+            TestLogger.log("   📸 Current key crop saved to: " + currentCropPath);
             logFileLink(currentCropPath);
 
             String expectedKeyName;
@@ -380,48 +380,48 @@ public class ADBOTPScreenAssertion {
             String expectedRefPath = EXPECTED_KEY_SELECTED_FOLDER + "/" + expectedKeyName;
             File expectedRef = new File(expectedRefPath);
             if (!expectedRef.exists()) {
-                ADBTestLogger.logWarning("   ⚠️ Expected reference not found for key '" + key + "': " + expectedRefPath);
+                TestLogger.logWarning("   ⚠️ Expected reference not found for key '" + key + "': " + expectedRefPath);
                 continue;
             }
 
             boolean match = compareImages(currentCropPath, expectedRefPath, 90.0);
             if (match) {
-                ADBTestLogger.logSuccess("   ✅ Key '" + key + "' MATCHES selected reference!");
+                TestLogger.logSuccess("   ✅ Key '" + key + "' MATCHES selected reference!");
                 imageDetectedDigit = key;
                 break;
             } else {
-                ADBTestLogger.logWarning("   ❌ Key '" + key + "' does NOT match selected reference.");
+                TestLogger.logWarning("   ❌ Key '" + key + "' does NOT match selected reference.");
             }
         }
 
-        ADBTestLogger.log("");
-        ADBTestLogger.log("   ═══════════════════════════════════════════════════");
-        ADBTestLogger.log("   📊 FINAL RESULT:");
-        ADBTestLogger.log("   ├─ XML: '0' is " + (zeroIsNested ? "NESTED ✅" : "DIRECT ❌"));
-        ADBTestLogger.log("   ├─ Image: " + (imageDetectedDigit != null ? "DIGIT '" + imageDetectedDigit + "' MATCHES ✅" : "NO MATCH ❌"));
-        ADBTestLogger.log("   ═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("   ═══════════════════════════════════════════════════");
+        TestLogger.log("   📊 FINAL RESULT:");
+        TestLogger.log("   ├─ XML: '0' is " + (zeroIsNested ? "NESTED ✅" : "DIRECT ❌"));
+        TestLogger.log("   ├─ Image: " + (imageDetectedDigit != null ? "DIGIT '" + imageDetectedDigit + "' MATCHES ✅" : "NO MATCH ❌"));
+        TestLogger.log("   ═══════════════════════════════════════════════════");
 
         String finalDigit;
         if (imageDetectedDigit != null) {
             finalDigit = imageDetectedDigit;
         } else {
-            ADBTestLogger.logWarning("   ⚠️ No digit matched. Defaulting to '0'.");
+            TestLogger.logWarning("   ⚠️ No digit matched. Defaulting to '0'.");
             finalDigit = "0";
         }
 
-        ADBTestLogger.logSuccess("   🎯 FINAL DETECTED STARTING DIGIT: '" + finalDigit + "'");
+        TestLogger.logSuccess("   🎯 FINAL DETECTED STARTING DIGIT: '" + finalDigit + "'");
         return finalDigit;
     }
 
     // ==================== XML CHECK: IS '0' NESTED (INFO ONLY) ====================
 
     private boolean checkIfZeroIsNestedInXML(String xml) {
-        ADBTestLogger.log("   🔍 Checking if '0' is nested inside an extra View...");
+        TestLogger.log("   🔍 Checking if '0' is nested inside an extra View...");
 
         try {
             int keypadIndex = xml.indexOf("mod_keyboard");
             if (keypadIndex == -1) {
-                ADBTestLogger.logWarning("   ⚠️ 'mod_keyboard' not found in XML!");
+                TestLogger.logWarning("   ⚠️ 'mod_keyboard' not found in XML!");
                 return false;
             }
 
@@ -436,15 +436,15 @@ public class ADBOTPScreenAssertion {
             boolean zeroIsNested = zeroNestedMatcher.find();
 
             if (zeroIsNested) {
-                ADBTestLogger.log("   ✅ Found '0' nested inside an extra View (info only, NOT deciding)");
+                TestLogger.log("   ✅ Found '0' nested inside an extra View (info only, NOT deciding)");
             } else {
-                ADBTestLogger.log("   ❌ '0' is NOT nested inside an extra View (info only, NOT deciding)");
+                TestLogger.log("   ❌ '0' is NOT nested inside an extra View (info only, NOT deciding)");
             }
 
             return zeroIsNested;
 
         } catch (Exception e) {
-            ADBTestLogger.logWarning("   ⚠️ Could not parse XML: " + e.getMessage());
+            TestLogger.logWarning("   ⚠️ Could not parse XML: " + e.getMessage());
             return false;
         }
     }
@@ -482,12 +482,12 @@ public class ADBOTPScreenAssertion {
         File expectedFile = new File(expectedPath);
 
         if (!expectedFile.exists()) {
-            ADBTestLogger.logWarning("   ⚠️ Expected image not found: " + expectedPath);
+            TestLogger.logWarning("   ⚠️ Expected image not found: " + expectedPath);
             return false;
         }
 
         if (!actualFile.exists()) {
-            ADBTestLogger.logWarning("   ⚠️ Actual image not found: " + actualPath);
+            TestLogger.logWarning("   ⚠️ Actual image not found: " + actualPath);
             return false;
         }
 
@@ -496,7 +496,7 @@ public class ADBOTPScreenAssertion {
 
         if (actualImage.getWidth() != expectedImage.getWidth() ||
                 actualImage.getHeight() != expectedImage.getHeight()) {
-            ADBTestLogger.logWarning("   ⚠️ Image dimensions mismatch!");
+            TestLogger.logWarning("   ⚠️ Image dimensions mismatch!");
             return false;
         }
 
@@ -520,7 +520,7 @@ public class ADBOTPScreenAssertion {
         }
 
         double similarity = 100.0 - ((double) mismatchedPixels / totalPixels * 100);
-        ADBTestLogger.log("   📊 Image similarity: " + String.format("%.2f", similarity) + "%");
+        TestLogger.log("   📊 Image similarity: " + String.format("%.2f", similarity) + "%");
 
         return similarity >= threshold;
     }
@@ -539,13 +539,13 @@ public class ADBOTPScreenAssertion {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                ADBTestLogger.log("   🖥️ " + line);
+                TestLogger.log("   🖥️ " + line);
             }
         }
 
         int exitCode = process.waitFor();
         if (exitCode != 0) {
-            ADBTestLogger.logWarning("   ⚠️ Command exited with code " + exitCode);
+            TestLogger.logWarning("   ⚠️ Command exited with code " + exitCode);
         }
     }
 
@@ -553,19 +553,19 @@ public class ADBOTPScreenAssertion {
 
     private void printAndValidateSSID() throws Exception {
         String ssid = getCurrentSSID();
-        ADBTestLogger.log("   📶 Current SSID: " + ssid);
+        TestLogger.log("   📶 Current SSID: " + ssid);
 
         Router router = ADBRouterConfig.getRouterBySSID(ssid);
         if (router != null) {
-            ADBTestLogger.log("   ✅ Router found in config: " + router.getSsid());
-            ADBTestLogger.log("   ✅ Valid phone number for this router: " + router.getValidPhoneNumber());
+            TestLogger.log("   ✅ Router found in config: " + router.getSsid());
+            TestLogger.log("   ✅ Valid phone number for this router: " + router.getValidPhoneNumber());
             if (router.getValidPhoneNumber().equals("0543501323")) {
-                ADBTestLogger.logSuccess("✅ SSID matched. Valid phone number confirmed for this router");
+                TestLogger.logSuccess("✅ SSID matched. Valid phone number confirmed for this router");
             } else {
-                ADBTestLogger.logWarning("⚠️ Router found but valid phone number differs");
+                TestLogger.logWarning("⚠️ Router found but valid phone number differs");
             }
         } else {
-            ADBTestLogger.logWarning("⚠️ Router SSID not found in config (case mismatch may exist): " + ssid);
+            TestLogger.logWarning("⚠️ Router SSID not found in config (case mismatch may exist): " + ssid);
         }
     }
 
@@ -603,21 +603,21 @@ public class ADBOTPScreenAssertion {
     }
 
     private void connectDevice() throws Exception {
-        ADBTestLogger.log("   🔌 Connecting to device: " + deviceUDID);
+        TestLogger.log("   🔌 Connecting to device: " + deviceUDID);
         runCommand("adb", "connect", deviceUDID);
-        ADBTestLogger.logSuccess("✅ Device connected");
+        TestLogger.logSuccess("✅ Device connected");
     }
 
     private void pressHome() throws Exception {
-        ADBTestLogger.log("   📱 Pressing HOME");
+        TestLogger.log("   📱 Pressing HOME");
         runCommand("adb", "-s", deviceUDID, "shell", "input", "keyevent", "3");
         Thread.sleep(1000);
     }
 
     private void launchApp() throws Exception {
-        ADBTestLogger.log("   🚀 Clicking HOT icon (DPAD_CENTER)");
+        TestLogger.log("   🚀 Clicking HOT icon (DPAD_CENTER)");
         runCommand("adb", "-s", deviceUDID, "shell", "input", "keyevent", "23");
-        ADBTestLogger.logSuccess("✅ HOT icon clicked. Starting immediate polling...");
+        TestLogger.logSuccess("✅ HOT icon clicked. Starting immediate polling...");
     }
 
     private void pressDpad(int keyCode) throws Exception {
@@ -642,7 +642,7 @@ public class ADBOTPScreenAssertion {
         String localPath = CURRENT_SCREEN_PATH + "/ValidPhoneNumberADB_Current_" + testStartTime + ".png";
         runCommand("adb", "-s", deviceUDID, "pull", remotePath, localPath);
 
-        ADBTestLogger.log("📸 Current screenshot saved to: " + new File(localPath).getAbsolutePath());
+        TestLogger.log("📸 Current screenshot saved to: " + new File(localPath).getAbsolutePath());
         logFileLink(localPath);
 
         return new File(localPath);
@@ -656,10 +656,10 @@ public class ADBOTPScreenAssertion {
             String localPath = failFolderPath + "/" + name + "_" + testStartTime + ".png";
             runCommand("adb", "-s", deviceUDID, "pull", remotePath, localPath);
 
-            ADBTestLogger.log("📸 Screenshot saved to: " + new File(localPath).getAbsolutePath());
+            TestLogger.log("📸 Screenshot saved to: " + new File(localPath).getAbsolutePath());
             logFileLink(localPath);
         } catch (Exception e) {
-            ADBTestLogger.logWarning("⚠️ Could not take screenshot: " + e.getMessage());
+            TestLogger.logWarning("⚠️ Could not take screenshot: " + e.getMessage());
         }
     }
 
@@ -669,17 +669,17 @@ public class ADBOTPScreenAssertion {
             runCommand("adb", "-s", deviceUDID, "shell", "uiautomator", "dump", remoteDumpPath);
             String localPath = xmlFolderPath + "/" + name + "_" + testStartTime + ".xml";
             runCommand("adb", "-s", deviceUDID, "pull", remoteDumpPath, localPath);
-            ADBTestLogger.log("📄 Page Source: " + new File(localPath).getAbsolutePath());
+            TestLogger.log("📄 Page Source: " + new File(localPath).getAbsolutePath());
             logFileLink(localPath);
         } catch (Exception e) {
-            ADBTestLogger.logWarning("⚠️ Could not save page source: " + e.getMessage());
+            TestLogger.logWarning("⚠️ Could not save page source: " + e.getMessage());
         }
     }
 
     // ==================== WAIT FOR APP TO LOAD ====================
 
     private void waitForAppToLoad() throws Exception {
-        ADBTestLogger.log("⏳ Starting immediate polling for Login screen...");
+        TestLogger.log("⏳ Starting immediate polling for Login screen...");
 
         long startTime = System.currentTimeMillis();
         long timeout = 30000;
@@ -690,7 +690,7 @@ public class ADBOTPScreenAssertion {
                     pageSource.contains("dvbtnConnect") &&
                     pageSource.contains("mod_keyboard")) {
 
-                ADBTestLogger.logSuccess("✅ Login screen loaded successfully in " + (System.currentTimeMillis() - startTime) + " ms");
+                TestLogger.logSuccess("✅ Login screen loaded successfully in " + (System.currentTimeMillis() - startTime) + " ms");
                 printLoginScreenElements(pageSource);
                 return;
             }
@@ -701,62 +701,62 @@ public class ADBOTPScreenAssertion {
     }
 
     private void printLoginScreenElements(String xml) {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("📋 LOGIN SCREEN - FOUND ELEMENTS");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("📋 LOGIN SCREEN - FOUND ELEMENTS");
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         if (xml.contains("txtUserCellPhone")) {
-            ADBTestLogger.logSuccess("   ✅ Phone number field: txtUserCellPhone");
+            TestLogger.logSuccess("   ✅ Phone number field: txtUserCellPhone");
         } else {
-            ADBTestLogger.logError("   ❌ Phone number field: txtUserCellPhone");
+            TestLogger.logError("   ❌ Phone number field: txtUserCellPhone");
         }
 
         if (xml.contains("dvbtnConnect")) {
-            ADBTestLogger.logSuccess("   ✅ Connect button: dvbtnConnect - \"התחבר\"");
+            TestLogger.logSuccess("   ✅ Connect button: dvbtnConnect - \"התחבר\"");
         } else {
-            ADBTestLogger.logError("   ❌ Connect button: dvbtnConnect");
+            TestLogger.logError("   ❌ Connect button: dvbtnConnect");
         }
 
         if (xml.contains("mod_keyboard")) {
-            ADBTestLogger.logSuccess("   ✅ Numeric keypad: mod_keyboard - Virtual Keypad");
+            TestLogger.logSuccess("   ✅ Numeric keypad: mod_keyboard - Virtual Keypad");
         } else {
-            ADBTestLogger.logError("   ❌ Numeric keypad: mod_keyboard");
+            TestLogger.logError("   ❌ Numeric keypad: mod_keyboard");
         }
 
         if (xml.contains("מספר נייד (הרשום במנוי)")) {
-            ADBTestLogger.logSuccess("   ✅ Phone field label: מספר נייד (הרשום במנוי)");
+            TestLogger.logSuccess("   ✅ Phone field label: מספר נייד (הרשום במנוי)");
         } else {
-            ADBTestLogger.logError("   ❌ Phone field label: מספר נייד (הרשום במנוי)");
+            TestLogger.logError("   ❌ Phone field label: מספר נייד (הרשום במנוי)");
         }
 
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
     }
 
     // ==================== ENTER PHONE NUMBER ====================
 
     private void enterPhoneNumber(String phoneNumber, String startDigit) throws Exception {
-        ADBTestLogger.log("📱 Entering phone number: " + phoneNumber);
-        ADBTestLogger.log("   Using DPAD navigation on keypad");
-        ADBTestLogger.log("   Starting from digit: " + startDigit);
+        TestLogger.log("📱 Entering phone number: " + phoneNumber);
+        TestLogger.log("   Using DPAD navigation on keypad");
+        TestLogger.log("   Starting from digit: " + startDigit);
 
         int[] startPos = KEYPAD_POSITIONS.get(startDigit);
         if (startPos == null) {
-            ADBTestLogger.logWarning("⚠️ Unknown start digit: " + startDigit + ", defaulting to '5'");
+            TestLogger.logWarning("⚠️ Unknown start digit: " + startDigit + ", defaulting to '5'");
             startPos = KEYPAD_POSITIONS.get("5");
         }
 
         int currentRow = startPos[0];
         int currentCol = startPos[1];
 
-        ADBTestLogger.log("   Starting position: Row " + currentRow + ", Col " + currentCol);
+        TestLogger.log("   Starting position: Row " + currentRow + ", Col " + currentCol);
 
         for (char digitChar : phoneNumber.toCharArray()) {
             String digit = String.valueOf(digitChar);
             int[] targetPos = KEYPAD_POSITIONS.get(digit);
             if (targetPos == null) {
-                ADBTestLogger.logWarning("⚠️ Unknown digit: " + digit + ", skipping...");
+                TestLogger.logWarning("⚠️ Unknown digit: " + digit + ", skipping...");
                 continue;
             }
 
@@ -766,37 +766,37 @@ public class ADBOTPScreenAssertion {
             while (currentRow > targetRow) {
                 pressDpad(19);
                 currentRow--;
-                ADBTestLogger.log("   ↑ Moved UP to row " + currentRow);
+                TestLogger.log("   ↑ Moved UP to row " + currentRow);
             }
             while (currentRow < targetRow) {
                 pressDpad(20);
                 currentRow++;
-                ADBTestLogger.log("   ↓ Moved DOWN to row " + currentRow);
+                TestLogger.log("   ↓ Moved DOWN to row " + currentRow);
             }
 
             while (currentCol > targetCol) {
                 pressDpad(21);
                 currentCol--;
-                ADBTestLogger.log("   ← Moved LEFT to col " + currentCol);
+                TestLogger.log("   ← Moved LEFT to col " + currentCol);
             }
             while (currentCol < targetCol) {
                 pressDpad(22);
                 currentCol++;
-                ADBTestLogger.log("   → Moved RIGHT to col " + currentCol);
+                TestLogger.log("   → Moved RIGHT to col " + currentCol);
             }
 
             pressDpad(23);
-            ADBTestLogger.log("   🔘 Pressed digit: " + digit);
+            TestLogger.log("   🔘 Pressed digit: " + digit);
             Thread.sleep(200);
         }
 
-        ADBTestLogger.logSuccess("✅ Phone number entered successfully: " + phoneNumber);
+        TestLogger.logSuccess("✅ Phone number entered successfully: " + phoneNumber);
     }
 
     // ==================== VERIFY CONNECT BUTTON SELECTED ====================
 
     private void verifyConnectButtonSelected() throws Exception {
-        ADBTestLogger.log("🔍 Verifying 'התחבר' button is selected (white highlighted)...");
+        TestLogger.log("🔍 Verifying 'התחבר' button is selected (white highlighted)...");
 
         boolean selected = validateConnectButtonCrop(CONNECT_BUTTON_SELECTED_EXPECTED, "selected");
         if (!selected) {
@@ -807,19 +807,19 @@ public class ADBOTPScreenAssertion {
     // ==================== PRESS CONNECT BUTTON ====================
 
     private void pressConnectButton() throws Exception {
-        ADBTestLogger.log("🔘 Pressing 'התחבר' button...");
+        TestLogger.log("🔘 Pressing 'התחבר' button...");
         for (int i = 0; i < 2; i++) {
             pressDpad(20);
         }
         pressDpad(23);
-        ADBTestLogger.logSuccess("✅ 'התחבר' button pressed");
+        TestLogger.logSuccess("✅ 'התחבר' button pressed");
         Thread.sleep(3000);
     }
 
     // ==================== OTP SCREEN VALIDATION ====================
 
     private void validateOTPScreen() throws Exception {
-        ADBTestLogger.log("⏳ Waiting for OTP screen to load...");
+        TestLogger.log("⏳ Waiting for OTP screen to load...");
 
         long startTime = System.currentTimeMillis();
         long timeout = 30000;
@@ -831,7 +831,7 @@ public class ADBOTPScreenAssertion {
                     pageSource.contains("dvbtnConnectToken") &&
                     pageSource.contains("mod_PopupLogin_ResendTokenLink")) {
 
-                ADBTestLogger.logSuccess("✅ OTP screen loaded successfully!");
+                TestLogger.logSuccess("✅ OTP screen loaded successfully!");
                 printOTPScreenElements(pageSource);
                 return;
             }
@@ -843,37 +843,37 @@ public class ADBOTPScreenAssertion {
     }
 
     private void printOTPScreenElements(String xml) {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("📋 OTP SCREEN - FOUND ELEMENTS");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("📋 OTP SCREEN - FOUND ELEMENTS");
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         if (xml.contains("txtToken")) {
-            ADBTestLogger.logSuccess("   ✅ OTP input field: txtToken");
+            TestLogger.logSuccess("   ✅ OTP input field: txtToken");
         } else {
-            ADBTestLogger.logError("   ❌ OTP input field: txtToken");
+            TestLogger.logError("   ❌ OTP input field: txtToken");
         }
 
         if (xml.contains("dvbtnConnectToken")) {
-            ADBTestLogger.logSuccess("   ✅ Verify button: dvbtnConnectToken");
+            TestLogger.logSuccess("   ✅ Verify button: dvbtnConnectToken");
         } else {
-            ADBTestLogger.logError("   ❌ Verify button: dvbtnConnectToken");
+            TestLogger.logError("   ❌ Verify button: dvbtnConnectToken");
         }
 
         if (xml.contains("mod_PopupLogin_ResendTokenLink")) {
-            ADBTestLogger.logSuccess("   ✅ Resend link: mod_PopupLogin_ResendTokenLink");
+            TestLogger.logSuccess("   ✅ Resend link: mod_PopupLogin_ResendTokenLink");
         } else {
-            ADBTestLogger.logError("   ❌ Resend link: mod_PopupLogin_ResendTokenLink");
+            TestLogger.logError("   ❌ Resend link: mod_PopupLogin_ResendTokenLink");
         }
 
         if (xml.contains("הזן קוד אימות שנשלח לנייד")) {
-            ADBTestLogger.logSuccess("   ✅ OTP label: הזן קוד אימות שנשלח לנייד");
+            TestLogger.logSuccess("   ✅ OTP label: הזן קוד אימות שנשלח לנייד");
         } else {
-            ADBTestLogger.logError("   ❌ OTP label: הזן קוד אימות שנשלח לנייד");
+            TestLogger.logError("   ❌ OTP label: הזן קוד אימות שנשלח לנייד");
         }
 
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
     }
 
     // ==================== SAVE METHODS ====================
@@ -884,10 +884,10 @@ public class ADBOTPScreenAssertion {
             if (!dir.exists()) dir.mkdirs();
             String fileName = "ValidPhoneNumberADB_PASS_" + testStartTime + ".png";
             FileUtils.copyFile(screenshot, new File(dir, fileName));
-            ADBTestLogger.log("📸 PASS screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
+            TestLogger.log("📸 PASS screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
             logFileLink(new File(dir, fileName).getAbsolutePath());
         } catch (IOException e) {
-            ADBTestLogger.logError("❌ Could not save pass screenshot: " + e.getMessage());
+            TestLogger.logError("❌ Could not save pass screenshot: " + e.getMessage());
         }
     }
 
@@ -897,19 +897,19 @@ public class ADBOTPScreenAssertion {
             if (!dir.exists()) dir.mkdirs();
             String fileName = "test_failure_" + testStartTime + ".png";
             FileUtils.copyFile(screenshot, new File(dir, fileName));
-            ADBTestLogger.log("📸 FAIL screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
+            TestLogger.log("📸 FAIL screenshot saved to: " + new File(dir, fileName).getAbsolutePath());
             logFileLink(new File(dir, fileName).getAbsolutePath());
         } catch (IOException e) {
-            ADBTestLogger.logError("❌ Could not save fail screenshot: " + e.getMessage());
+            TestLogger.logError("❌ Could not save fail screenshot: " + e.getMessage());
         }
     }
 
     // ==================== REPORTING ====================
 
     private void printResultsSummary(boolean passed) {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══ TEST RESULTS SUMMARY ═══");
-        ADBTestLogger.log("📌 Status: " + (passed ? "✅ PASSED" : "❌ FAILED"));
-        ADBTestLogger.log("🕐 Timestamp: " + testStartTime);
+        TestLogger.log("");
+        TestLogger.log("═══ TEST RESULTS SUMMARY ═══");
+        TestLogger.log("📌 Status: " + (passed ? "✅ PASSED" : "❌ FAILED"));
+        TestLogger.log("🕐 Timestamp: " + testStartTime);
     }
 }

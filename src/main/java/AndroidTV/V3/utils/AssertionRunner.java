@@ -7,8 +7,6 @@ import AndroidTV.V3.validators.ADBScreenAssertionResult;
 import AndroidTV.V3.validators.ADBScreenValidator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.File;
-
 /**
  * Test-facing assertion runner.
  *
@@ -32,7 +30,7 @@ import java.io.File;
  * If the screen marker never appears (timeout), the runner short-circuits:
  * it produces a marker-missing result without running element/crop checks.
  */
-public class ADBTestAssertionRunner {
+public class AssertionRunner {
 
     private final ADBDeviceController device;
     private final ADBXmlParser parser;
@@ -40,11 +38,11 @@ public class ADBTestAssertionRunner {
     private final String logsFolderPath;
     private final String testStartTime;
 
-    public ADBTestAssertionRunner(ADBDeviceController device,
-                                  ADBXmlParser parser,
-                                  String xmlFolderPath,
-                                  String logsFolderPath,
-                                  String testStartTime) {
+    public AssertionRunner(ADBDeviceController device,
+                           ADBXmlParser parser,
+                           String xmlFolderPath,
+                           String logsFolderPath,
+                           String testStartTime) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;
@@ -66,10 +64,10 @@ public class ADBTestAssertionRunner {
                                                  String failRoot,
                                                  int markerTimeoutMs) throws Exception {
 
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("🧪 RUNNING ASSERTION FOR: " + profile.getName());
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("🧪 RUNNING ASSERTION FOR: " + profile.getName());
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         ADBScreenValidator validator = new ADBScreenValidator(
                 device, parser, xmlFolderPath, testStartTime, screenshotRoot, failRoot);
@@ -85,7 +83,7 @@ public class ADBTestAssertionRunner {
             result.setMarkerPresent(false);
             result.setFailureReason("Marker '" + profile.getMarkerValue() +
                     "' did not appear within " + markerTimeoutMs + " ms");
-            ADBTestLogger.logError("   ❌ Short-circuiting assertion — screen never loaded");
+            TestLogger.logError("   ❌ Short-circuiting assertion — screen never loaded");
         } else {
             // 2. Full assertion pass
             result = validator.assertAll(profile);
@@ -94,16 +92,16 @@ public class ADBTestAssertionRunner {
         // 3. Write JSON log
         String jsonPath = logsFolderPath + "/" + profile.getName() + "_" + testStartTime + ".json";
         ObjectNode json = buildJson(profile, result, screenshotRoot, failRoot);
-        ADBArtifactReporter.writeJson(json, jsonPath);
+        ArtifactReporter.writeJson(json, jsonPath);
 
         // 4. Print folder links
         String runFolder = screenshotRoot + "/" + profile.getName() + "_" + testStartTime;
-        ADBArtifactReporter.printFolderLink("Screen folder", runFolder);
-        ADBArtifactReporter.printFolderLink("Logs folder", logsFolderPath);
+        ArtifactReporter.printFolderLink("Screen folder", runFolder);
+        ArtifactReporter.printFolderLink("Logs folder", logsFolderPath);
 
-        ADBTestLogger.log("");
-        ADBTestLogger.log("📌 Assertion result: " + result);
-        ADBTestLogger.log("");
+        TestLogger.log("");
+        TestLogger.log("📌 Assertion result: " + result);
+        TestLogger.log("");
 
         return result;
     }
@@ -115,7 +113,7 @@ public class ADBTestAssertionRunner {
                                  String screenshotRoot,
                                  String failRoot) {
 
-        ObjectNode root = ADBArtifactReporter.newJsonObject();
+        ObjectNode root = ArtifactReporter.newJsonObject();
 
         root.put("testName", profile.getName());
         root.put("timestamp", testStartTime);
@@ -125,17 +123,17 @@ public class ADBTestAssertionRunner {
                 result.getFailureReason() == null ? null : result.getFailureReason());
 
         // Elements
-        ObjectNode elementsNode = ADBArtifactReporter.newJsonObject();
+        ObjectNode elementsNode = ArtifactReporter.newJsonObject();
         for (java.util.Map.Entry<String, Boolean> e : result.getElements().entrySet()) {
             elementsNode.put(e.getKey(), e.getValue());
         }
         root.set("elements", elementsNode);
 
         // Crops
-        ObjectNode cropsNode = ADBArtifactReporter.newJsonObject();
+        ObjectNode cropsNode = ArtifactReporter.newJsonObject();
         for (java.util.Map.Entry<String, ADBScreenAssertionResult.CropResult> e
                 : result.getCropResults().entrySet()) {
-            ObjectNode one = ADBArtifactReporter.newJsonObject();
+            ObjectNode one = ArtifactReporter.newJsonObject();
             one.put("passed", e.getValue().isPassed());
             one.put("similarity", e.getValue().getSimilarity());
             cropsNode.set(e.getKey(), one);
@@ -143,7 +141,7 @@ public class ADBTestAssertionRunner {
         root.set("crops", cropsNode);
 
         // Summary counters
-        ObjectNode summary = ADBArtifactReporter.newJsonObject();
+        ObjectNode summary = ArtifactReporter.newJsonObject();
         summary.put("elementsFound", result.getElementsFoundCount());
         summary.put("elementsTotal", result.getElementsTotalCount());
         summary.put("cropsPassed", result.getCropsPassedCount());
@@ -151,7 +149,7 @@ public class ADBTestAssertionRunner {
         root.set("summary", summary);
 
         // Artifacts
-        ObjectNode artifacts = ADBArtifactReporter.newJsonObject();
+        ObjectNode artifacts = ArtifactReporter.newJsonObject();
         String runFolder = screenshotRoot + "/" + profile.getName() + "_" + testStartTime;
         String failFolder = failRoot + "/" + profile.getName() + "_" + testStartTime;
         artifacts.put("screenFolder", runFolder);

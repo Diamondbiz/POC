@@ -3,7 +3,7 @@ package AndroidTV.V3.pages;
 import AndroidTV.V3.core.ADBDeviceController;
 import AndroidTV.V3.core.ADBXmlParser;
 import AndroidTV.V3.services.KeypadStateService;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.TestLogger;
 
 import java.util.Map;
 
@@ -43,22 +43,22 @@ public class ADBLoginPage {
     }
 
     public void enterPhoneNumber(Map<String, int[]> keypadPositions, String phoneNumber) throws Exception {
-        ADBTestLogger.log("📱 Entering phone number: " + phoneNumber);
+        TestLogger.log("📱 Entering phone number: " + phoneNumber);
 
         String detected = keypadStateService.detectSelectedDigit();
 
         int[] startPos;
         if (detected == null || detected.isEmpty()) {
-            ADBTestLogger.logWarning("   ⚠️ Could not detect selected digit — defaulting to '0'");
+            TestLogger.logWarning("   ⚠️ Could not detect selected digit — defaulting to '0'");
             startPos = keypadPositions.get("0");
         } else {
             startPos = keypadPositions.get(detected);
             if (startPos == null) {
-                ADBTestLogger.logWarning("   ⚠️ Detected '" + detected +
+                TestLogger.logWarning("   ⚠️ Detected '" + detected +
                         "' not in keypad map — defaulting to '0'");
                 startPos = keypadPositions.get("0");
             } else {
-                ADBTestLogger.log("   🎯 Using starting digit: " + detected);
+                TestLogger.log("   🎯 Using starting digit: " + detected);
             }
         }
 
@@ -69,7 +69,7 @@ public class ADBLoginPage {
             String digit = String.valueOf(digitChar);
             int[] targetPos = keypadPositions.get(digit);
             if (targetPos == null) {
-                ADBTestLogger.logWarning("⚠️ Unknown digit: " + digit + ", skipping...");
+                TestLogger.logWarning("⚠️ Unknown digit: " + digit + ", skipping...");
                 continue;
             }
 
@@ -85,7 +85,7 @@ public class ADBLoginPage {
             Thread.sleep(200);
         }
 
-        ADBTestLogger.logSuccess("✅ Phone number entered: " + phoneNumber);
+        TestLogger.logSuccess("✅ Phone number entered: " + phoneNumber);
     }
 
     public void pressConnect() throws Exception {

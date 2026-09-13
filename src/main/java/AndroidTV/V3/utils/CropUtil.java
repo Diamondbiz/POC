@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
  *
  * Reusable by any validator that needs a crop of a screenshot region.
  */
-public class ADBCropUtil {
+public class CropUtil {
 
     /**
      * Crops a source PNG into a destination PNG.
@@ -29,14 +29,14 @@ public class ADBCropUtil {
         int height = y2 - y1;
 
         if (width <= 0 || height <= 0) {
-            ADBTestLogger.logWarning("ADBCropUtil: invalid bounds " +
+            TestLogger.logWarning("ADBCropUtil: invalid bounds " +
                     x1 + "," + y1 + " → " + x2 + "," + y2);
             return null;
         }
 
         File src = new File(sourcePath);
         if (!src.exists()) {
-            ADBTestLogger.logWarning("ADBCropUtil: source not found: " + sourcePath);
+            TestLogger.logWarning("ADBCropUtil: source not found: " + sourcePath);
             return null;
         }
 
@@ -61,7 +61,7 @@ public class ADBCropUtil {
         }
 
         if (exitCode != 0 || !out.exists()) {
-            ADBTestLogger.logWarning("ADBCropUtil: crop failed for " + outputPath);
+            TestLogger.logWarning("ADBCropUtil: crop failed for " + outputPath);
             return null;
         }
 
@@ -73,7 +73,7 @@ public class ADBCropUtil {
      */
     public static String crop(String sourcePath, String outputPath, int[] bounds) throws Exception {
         if (bounds == null || bounds.length != 4) {
-            ADBTestLogger.logWarning("ADBCropUtil: bounds must be [x1,y1,x2,y2]");
+            TestLogger.logWarning("ADBCropUtil: bounds must be [x1,y1,x2,y2]");
             return null;
         }
         return crop(sourcePath, outputPath, bounds[0], bounds[1], bounds[2], bounds[3]);

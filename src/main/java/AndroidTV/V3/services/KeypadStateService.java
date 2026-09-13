@@ -2,8 +2,8 @@ package AndroidTV.V3.services;
 
 import AndroidTV.V3.core.ADBDeviceController;
 import AndroidTV.V3.core.ADBXmlParser;
-import AndroidTV.V3.utils.ADBImageComparator;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.ImageComparator;
+import AndroidTV.V3.utils.TestLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,25 +69,25 @@ public class KeypadStateService {
      * Also prints whether the decision matches the expected default.
      */
     public String detectSelectedDigit() throws Exception {
-        ADBTestLogger.log("   🔍 Detecting selected digit...");
+        TestLogger.log("   🔍 Detecting selected digit...");
 
         String xmlValue = detectFromXml();
         String imageValue = detectFromImage();
 
         String decision = reconcile(xmlValue, imageValue);
 
-        ADBTestLogger.log("   🎯 Detected: " + decision);
+        TestLogger.log("   🎯 Detected: " + decision);
 
         // ---- Default-expectation check (informational only) ----
         if (EXPECTED_DEFAULT.equals(decision)) {
-            ADBTestLogger.log("   ✅ Matches expected default (" + EXPECTED_DEFAULT + ")");
+            TestLogger.log("   ✅ Matches expected default (" + EXPECTED_DEFAULT + ")");
         } else if (isUsableKey(decision)) {
-            ADBTestLogger.logWarning("   ⚠️ Detected '" + decision +
+            TestLogger.logWarning("   ⚠️ Detected '" + decision +
                     "', but expected default is '" + EXPECTED_DEFAULT + "'");
-            ADBTestLogger.logWarning("      The keypad was NOT in its fresh state. " +
+            TestLogger.logWarning("      The keypad was NOT in its fresh state. " +
                     "The framework navigated from the detected position.");
         } else {
-            ADBTestLogger.logWarning("   ❌ No usable detection — fallback '" +
+            TestLogger.logWarning("   ❌ No usable detection — fallback '" +
                     EXPECTED_DEFAULT + "' used");
         }
 
@@ -110,7 +110,7 @@ public class KeypadStateService {
             String xml = device.getScreenXml(xmlFolderPath, testStartTime);
             int keypadIdx = xml.indexOf("mod_keyboard_Container");
             if (keypadIdx == -1) {
-                ADBTestLogger.log("   XML signal:    (mod_keyboard_Container not found)");
+                TestLogger.log("   XML signal:    (mod_keyboard_Container not found)");
                 return "";
             }
 
@@ -128,16 +128,16 @@ public class KeypadStateService {
 
                 String key = matchKeyByTopLeft(x1, y1);
                 if (!key.isEmpty()) {
-                    ADBTestLogger.log("   XML signal:    " + key +
+                    TestLogger.log("   XML signal:    " + key +
                             "  (matched nested node bounds at " + x1 + "," + y1 + ")");
                     return key;
                 }
             }
 
-            ADBTestLogger.log("   XML signal:    (no nested node matched a known key)");
+            TestLogger.log("   XML signal:    (no nested node matched a known key)");
             return "";
         } catch (Exception e) {
-            ADBTestLogger.log("   XML signal:    (error: " + e.getMessage() + ")");
+            TestLogger.log("   XML signal:    (error: " + e.getMessage() + ")");
             return "";
         }
     }
@@ -171,15 +171,15 @@ public class KeypadStateService {
             File refFile = new File(refPath);
             if (!refFile.exists()) continue;
 
-            double similarity = ADBImageComparator.compare(cropPath, refPath);
+            double similarity = ImageComparator.compare(cropPath, refPath);
             if (similarity >= SIMILARITY_THRESHOLD) {
-                ADBTestLogger.log("   Image signal:  " + key +
+                TestLogger.log("   Image signal:  " + key +
                         "  (" + String.format("%.2f", similarity) + "%)");
                 return key;
             }
         }
 
-        ADBTestLogger.log("   Image signal:  (no match)");
+        TestLogger.log("   Image signal:  (no match)");
         return "";
     }
 
@@ -191,25 +191,25 @@ public class KeypadStateService {
 
         if (imgOk && xmlOk) {
             if (imageValue.equals(xmlValue)) {
-                ADBTestLogger.log("   ✅ Signals AGREE");
+                TestLogger.log("   ✅ Signals AGREE");
             } else {
-                ADBTestLogger.log("   ⚠️ Signals DISAGREE — trusting IMAGE: "
+                TestLogger.log("   ⚠️ Signals DISAGREE — trusting IMAGE: "
                         + imageValue + " (XML said " + xmlValue + ")");
             }
             return imageValue;
         }
 
         if (imgOk) {
-            ADBTestLogger.log("   ⚠️ XML failed — trusting IMAGE: " + imageValue);
+            TestLogger.log("   ⚠️ XML failed — trusting IMAGE: " + imageValue);
             return imageValue;
         }
 
         if (xmlOk) {
-            ADBTestLogger.log("   ⚠️ Image failed — trusting XML: " + xmlValue);
+            TestLogger.log("   ⚠️ Image failed — trusting XML: " + xmlValue);
             return xmlValue;
         }
 
-        ADBTestLogger.log("   ❌ No reliable detection — using fallback 0");
+        TestLogger.log("   ❌ No reliable detection — using fallback 0");
         return "0";
     }
 

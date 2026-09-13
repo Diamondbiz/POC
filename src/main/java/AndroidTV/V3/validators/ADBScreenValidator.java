@@ -5,10 +5,10 @@ import AndroidTV.V3.core.ADBXmlParser;
 import AndroidTV.V3.profiles.ADBCropExpectation;
 import AndroidTV.V3.profiles.ADBElementExpectation;
 import AndroidTV.V3.profiles.ADBScreenProfile;
-import AndroidTV.V3.utils.ADBArtifactReporter;
-import AndroidTV.V3.utils.ADBCropUtil;
-import AndroidTV.V3.utils.ADBImageComparator;
-import AndroidTV.V3.utils.ADBTestLogger;
+import AndroidTV.V3.utils.ArtifactReporter;
+import AndroidTV.V3.utils.CropUtil;
+import AndroidTV.V3.utils.ImageComparator;
+import AndroidTV.V3.utils.TestLogger;
 
 import java.io.File;
 
@@ -48,25 +48,25 @@ public class ADBScreenValidator {
      * Polls the UI XML until the profile's marker appears or timeout.
      */
     public boolean waitUntilMarkerVisible(ADBScreenProfile profile, int timeoutMs) throws Exception {
-        ADBTestLogger.log("⏳ Waiting for screen marker: " + profile.getMarkerValue());
+        TestLogger.log("⏳ Waiting for screen marker: " + profile.getMarkerValue());
         long start = System.currentTimeMillis();
         long lastLog = 0;
 
         while (System.currentTimeMillis() - start < timeoutMs) {
             String xml = device.getScreenXml(xmlFolderPath, testStartTime);
             if (profile.isMarkerPresentIn(xml, parser)) {
-                ADBTestLogger.logSuccess("   ✅ Marker appeared after " +
+                TestLogger.logSuccess("   ✅ Marker appeared after " +
                         (System.currentTimeMillis() - start) + " ms");
                 return true;
             }
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed - lastLog >= 2000) {
-                ADBTestLogger.log("   … still waiting (" + elapsed + " ms)");
+                TestLogger.log("   … still waiting (" + elapsed + " ms)");
                 lastLog = elapsed;
             }
             Thread.sleep(1000);
         }
-        ADBTestLogger.logError("   ❌ Marker did not appear within " + timeoutMs + " ms");
+        TestLogger.logError("   ❌ Marker did not appear within " + timeoutMs + " ms");
         return false;
     }
 
@@ -81,10 +81,10 @@ public class ADBScreenValidator {
      * Never throws. Returns a result.
      */
     public ADBScreenAssertionResult assertAll(ADBScreenProfile profile) throws Exception {
-        ADBTestLogger.log("");
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("🔍 ASSERTING SCREEN: " + profile.getName());
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("🔍 ASSERTING SCREEN: " + profile.getName());
+        TestLogger.log("═══════════════════════════════════════════════════");
 
         ADBScreenAssertionResult result = new ADBScreenAssertionResult(profile.getName());
 
@@ -95,39 +95,39 @@ public class ADBScreenValidator {
 
         if (!markerPresent) {
             result.setFailureReason("Marker '" + profile.getMarkerValue() + "' not present in XML");
-            ADBTestLogger.logError("   ❌ Marker not present: " + profile.getMarkerValue());
+            TestLogger.logError("   ❌ Marker not present: " + profile.getMarkerValue());
             return result;
         }
-        ADBTestLogger.logSuccess("   ✅ Marker present: " + profile.getMarkerValue());
+        TestLogger.logSuccess("   ✅ Marker present: " + profile.getMarkerValue());
 
         // 2. Elements
-        ADBTestLogger.log("");
-        ADBTestLogger.log("   ─── Elements ───");
+        TestLogger.log("");
+        TestLogger.log("   ─── Elements ───");
         for (ADBElementExpectation e : profile.getElements()) {
             boolean found = checkElement(xml, e);
             result.putElement(e.getName(), found);
             if (found) {
-                ADBTestLogger.logSuccess("      ✅ " + e.getName());
+                TestLogger.logSuccess("      ✅ " + e.getName());
             } else {
-                ADBTestLogger.logError("      ❌ " + e.getName() + " (missing: " + e.getValue() + ")");
+                TestLogger.logError("      ❌ " + e.getName() + " (missing: " + e.getValue() + ")");
             }
         }
 
         // 3. Screenshot
-        ADBTestLogger.log("");
-        ADBTestLogger.log("   ─── Screenshot ───");
+        TestLogger.log("");
+        TestLogger.log("   ─── Screenshot ───");
         String runFolder = screenshotRootFolder + "/" + profile.getName() + "_" + testStartTime;
         new File(runFolder).mkdirs();
 
         File shot = device.takeScreenshot(runFolder, testStartTime);
         String fullScreenshotPath = shot.getAbsolutePath();
 
-        ADBArtifactReporter.printFileLink("Screenshot", fullScreenshotPath);
+        ArtifactReporter.printFileLink("Screenshot", fullScreenshotPath);
 
         // 4. Crops
         if (!profile.getCrops().isEmpty()) {
-            ADBTestLogger.log("");
-            ADBTestLogger.log("   ─── Crops ───");
+            TestLogger.log("");
+            TestLogger.log("   ─── Crops ───");
             String cropFolder = runFolder + "/crops";
             new File(cropFolder).mkdirs();
             String failCropFolder = failRootFolder + "/" + profile.getName() + "_" + testStartTime;
@@ -135,22 +135,22 @@ public class ADBScreenValidator {
 
             for (ADBCropExpectation c : profile.getCrops()) {
                 String cropOutputPath = cropFolder + "/" + c.getName() + "_" + testStartTime + ".png";
-                String cropped = ADBCropUtil.crop(fullScreenshotPath, cropOutputPath, c.getBounds());
+                String cropped = CropUtil.crop(fullScreenshotPath, cropOutputPath, c.getBounds());
                 if (cropped == null) {
                     result.putCrop(c.getName(), false, 0.0);
-                    ADBTestLogger.logError("      ❌ " + c.getName() + " — crop failed");
+                    TestLogger.logError("      ❌ " + c.getName() + " — crop failed");
                     continue;
                 }
 
-                double similarity = ADBImageComparator.compare(cropped, c.getExpectedBaselinePath());
-                boolean passed = similarity >= ADBImageComparator.DEFAULT_SIMILARITY_THRESHOLD;
+                double similarity = ImageComparator.compare(cropped, c.getExpectedBaselinePath());
+                boolean passed = similarity >= ImageComparator.DEFAULT_SIMILARITY_THRESHOLD;
                 result.putCrop(c.getName(), passed, similarity);
 
                 if (passed) {
-                    ADBTestLogger.logSuccess("      ✅ " + c.getName() +
+                    TestLogger.logSuccess("      ✅ " + c.getName() +
                             " (" + String.format("%.2f", similarity) + "%)");
                 } else {
-                    ADBTestLogger.logError("      ❌ " + c.getName() +
+                    TestLogger.logError("      ❌ " + c.getName() +
                             " (" + String.format("%.2f", similarity) + "%)");
                     String failCopy = failCropFolder + "/" + c.getName() + "_FAIL_" + testStartTime + ".png";
                     try {
@@ -158,23 +158,23 @@ public class ADBScreenValidator {
                                 new File(cropped).toPath(),
                                 new File(failCopy).toPath(),
                                 java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                        ADBArtifactReporter.printFileLink("Failed crop", failCopy);
+                        ArtifactReporter.printFileLink("Failed crop", failCopy);
                     } catch (Exception ex) {
-                        ADBTestLogger.logWarning("      ⚠️ Could not copy failed crop: " + ex.getMessage());
+                        TestLogger.logWarning("      ⚠️ Could not copy failed crop: " + ex.getMessage());
                     }
                 }
             }
         }
 
         // 5. Summary
-        ADBTestLogger.log("");
-        ADBTestLogger.log("   ─── Summary ───");
-        ADBTestLogger.log("      Marker:    " + (markerPresent ? "✅" : "❌"));
-        ADBTestLogger.log("      Elements:  " + result.getElementsFoundCount() + "/" + result.getElementsTotalCount());
-        ADBTestLogger.log("      Crops:     " + result.getCropsPassedCount() + "/" + result.getCropsTotalCount());
-        ADBTestLogger.log("      Overall:   " + (result.isOverallPassed() ? "✅ PASS" : "❌ FAIL"));
-        ADBTestLogger.log("═══════════════════════════════════════════════════");
-        ADBTestLogger.log("");
+        TestLogger.log("");
+        TestLogger.log("   ─── Summary ───");
+        TestLogger.log("      Marker:    " + (markerPresent ? "✅" : "❌"));
+        TestLogger.log("      Elements:  " + result.getElementsFoundCount() + "/" + result.getElementsTotalCount());
+        TestLogger.log("      Crops:     " + result.getCropsPassedCount() + "/" + result.getCropsTotalCount());
+        TestLogger.log("      Overall:   " + (result.isOverallPassed() ? "✅ PASS" : "❌ FAIL"));
+        TestLogger.log("═══════════════════════════════════════════════════");
+        TestLogger.log("");
 
         return result;
     }
