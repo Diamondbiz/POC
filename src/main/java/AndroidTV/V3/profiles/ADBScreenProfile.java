@@ -1,6 +1,6 @@
 package AndroidTV.V3.profiles;
 
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.XmlParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +39,7 @@ public class ADBScreenProfile {
     /**
      * Returns true if the screen's marker is present in the given XML.
      */
-    public boolean isMarkerPresentIn(String xml, ADBXmlParser parser) {
+    public boolean isMarkerPresentIn(String xml, XmlParser parser) {
         switch (markerType) {
             case RESOURCE_ID:
                 return parser.containsResourceId(xml, markerValue);

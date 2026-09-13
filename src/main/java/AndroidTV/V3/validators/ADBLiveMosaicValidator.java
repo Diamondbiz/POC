@@ -1,19 +1,19 @@
 package AndroidTV.V3.validators;
 
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 
 /**
  * Validates the Live Mosaic screen elements.
  */
 public class ADBLiveMosaicValidator {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
 
-    public ADBLiveMosaicValidator(ADBDeviceController device, ADBXmlParser parser, String xmlFolderPath, String testStartTime) {
+    public ADBLiveMosaicValidator(DeviceController device, XmlParser parser, String xmlFolderPath, String testStartTime) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;

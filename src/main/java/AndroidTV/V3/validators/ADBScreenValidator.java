@@ -1,7 +1,7 @@
 package AndroidTV.V3.validators;
 
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.profiles.ADBCropExpectation;
 import AndroidTV.V3.profiles.ADBElementExpectation;
 import AndroidTV.V3.profiles.ADBScreenProfile;
@@ -21,15 +21,15 @@ import java.io.File;
  */
 public class ADBScreenValidator {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
     private final String screenshotRootFolder;    // e.g. "Screens/Current screen"
     private final String failRootFolder;          // e.g. "Screens/Fail"
 
-    public ADBScreenValidator(ADBDeviceController device,
-                              ADBXmlParser parser,
+    public ADBScreenValidator(DeviceController device,
+                              XmlParser parser,
                               String xmlFolderPath,
                               String testStartTime,
                               String screenshotRootFolder,

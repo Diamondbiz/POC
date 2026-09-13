@@ -12,11 +12,11 @@ import java.time.format.DateTimeFormatter;
  * Handles all low-level ADB commands.
  * This is the ONLY class that knows how to execute commands via ProcessBuilder.
  */
-public class ADBDeviceController {
+public class DeviceController {
 
     private final String deviceUDID;
 
-    public ADBDeviceController(String deviceUDID) {
+    public DeviceController(String deviceUDID) {
         this.deviceUDID = deviceUDID;
     }
 
@@ -60,33 +60,33 @@ public class ADBDeviceController {
     }
 
     public void pressHome() throws Exception {
-        pressKey(ADBKeyCodes.HOME);
+        pressKey(KeyCodes.HOME);
         Thread.sleep(500);
     }
 
     public void pressBack() throws Exception {
-        pressKey(ADBKeyCodes.BACK);
+        pressKey(KeyCodes.BACK);
         Thread.sleep(500);
     }
 
     public void pressDpadUp() throws Exception {
-        pressKey(ADBKeyCodes.DPAD_UP);
+        pressKey(KeyCodes.DPAD_UP);
     }
 
     public void pressDpadDown() throws Exception {
-        pressKey(ADBKeyCodes.DPAD_DOWN);
+        pressKey(KeyCodes.DPAD_DOWN);
     }
 
     public void pressDpadLeft() throws Exception {
-        pressKey(ADBKeyCodes.DPAD_LEFT);
+        pressKey(KeyCodes.DPAD_LEFT);
     }
 
     public void pressDpadRight() throws Exception {
-        pressKey(ADBKeyCodes.DPAD_RIGHT);
+        pressKey(KeyCodes.DPAD_RIGHT);
     }
 
     public void pressCenter() throws Exception {
-        pressKey(ADBKeyCodes.DPAD_CENTER);
+        pressKey(KeyCodes.DPAD_CENTER);
     }
 
     // ==================== APP CONTROL ====================

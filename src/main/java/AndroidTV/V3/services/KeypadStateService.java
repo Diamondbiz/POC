@@ -1,7 +1,7 @@
 package AndroidTV.V3.services;
 
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.utils.ImageComparator;
 import AndroidTV.V3.utils.TestLogger;
 
@@ -33,8 +33,8 @@ public class KeypadStateService {
     private static final double SIMILARITY_THRESHOLD = 90.0;
     private static final String EXPECTED_DEFAULT = "0";
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
     private final String referenceSelectedFolder;
@@ -45,8 +45,8 @@ public class KeypadStateService {
             "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Back", "Next"
     };
 
-    public KeypadStateService(ADBDeviceController device,
-                              ADBXmlParser parser,
+    public KeypadStateService(DeviceController device,
+                              XmlParser parser,
                               String xmlFolderPath,
                               String testStartTime,
                               String referenceSelectedFolder,

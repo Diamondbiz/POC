@@ -1,9 +1,9 @@
 package AndroidTV.V3.flows;
 import AndroidTV.V3.services.ADBOTPService;
 import AndroidTV.V3.config.ADBTestConfig;
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBScreenState;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.ScreenState;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.utils.TestLogger;
 
 /**
@@ -13,18 +13,18 @@ import AndroidTV.V3.utils.TestLogger;
  */
 public class ADBPreconditions {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
-    private final ADBScreenState state;
+    private final DeviceController device;
+    private final XmlParser parser;
+    private final ScreenState state;
     private final ADBLoginFlow loginFlow;
     private final ADBOTPService otpService;
     private final String xmlFolderPath;
     private final String testStartTime;
     private final String appPackage;
 
-    public ADBPreconditions(ADBDeviceController device,
-                            ADBXmlParser parser,
-                            ADBScreenState state,
+    public ADBPreconditions(DeviceController device,
+                            XmlParser parser,
+                            ScreenState state,
                             ADBLoginFlow loginFlow,
                             ADBOTPService otpService,
                             String xmlFolderPath,

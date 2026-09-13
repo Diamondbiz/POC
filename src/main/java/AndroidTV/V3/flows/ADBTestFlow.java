@@ -1,8 +1,8 @@
 package AndroidTV.V3.flows;
 
 import AndroidTV.V3.config.ADBTestConfig;
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.pages.ADBLiveMosaicPage;
 import AndroidTV.V3.pages.ADBLoginPage;
 import AndroidTV.V3.pages.ADBOTPPage;
@@ -15,11 +15,11 @@ import java.util.Map;
  */
 public class ADBTestFlow {
 
-    private final ADBDeviceController device;
+    private final DeviceController device;
     private final ADBLoginPage loginPage;
     private final ADBOTPPage otpPage;
     private final ADBLiveMosaicPage liveMosaicPage;
-    private final ADBXmlParser parser;
+    private final XmlParser parser;
 
     private final String xmlFolderPath;
     private final String testStartTime;
@@ -28,11 +28,11 @@ public class ADBTestFlow {
     private static final Map<String, int[]> KEY_BOUNDS_ON_SCREEN = ADBLoginFlow.KEY_BOUNDS_ON_SCREEN;
 
     public ADBTestFlow(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
-        this.device = new ADBDeviceController(deviceUDID);
+        this.device = new DeviceController(deviceUDID);
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;
 
-        this.parser = new ADBXmlParser();
+        this.parser = new XmlParser();
 
         String perSessionFolder = ADBTestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
         KeypadStateService keypadStateService = new KeypadStateService(
@@ -83,8 +83,8 @@ public class ADBTestFlow {
         }
     }
 
-    public ADBDeviceController getDevice() { return device; }
-    public ADBXmlParser getParser() { return parser; }
+    public DeviceController getDevice() { return device; }
+    public XmlParser getParser() { return parser; }
     public ADBLoginPage getLoginPage() { return loginPage; }
     public ADBOTPPage getOTPPage() { return otpPage; }
     public ADBLiveMosaicPage getLiveMosaicPage() { return liveMosaicPage; }

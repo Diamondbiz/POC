@@ -4,7 +4,7 @@ package AndroidTV.V3.core;
  * Centralized constant for all Android keyevent codes.
  * Use these constants instead of hardcoding numbers in test code.
  */
-public class ADBKeyCodes {
+public class KeyCodes {
     // Navigation
     public static final int DPAD_UP = 19;
     public static final int DPAD_DOWN = 20;

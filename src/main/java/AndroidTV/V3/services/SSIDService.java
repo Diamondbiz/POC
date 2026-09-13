@@ -3,7 +3,7 @@ package AndroidTV.V3.services;
 import AndroidTV.V3.Models.Router;
 import AndroidTV.V3.config.ADBRouterConfig;
 import AndroidTV.V3.config.ADBTestConfig;
-import AndroidTV.V3.core.ADBDeviceController;
+import AndroidTV.V3.core.DeviceController;
 import AndroidTV.V3.utils.TestLogger;
 
 import java.util.regex.Matcher;
@@ -40,11 +40,11 @@ public class SSIDService {
         }
     }
 
-    private final ADBDeviceController device;
+    private final DeviceController device;
     private final String xmlFolderPath;
     private final String testStartTime;
 
-    public SSIDService(ADBDeviceController device, String xmlFolderPath, String testStartTime) {
+    public SSIDService(DeviceController device, String xmlFolderPath, String testStartTime) {
         this.device = device;
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;

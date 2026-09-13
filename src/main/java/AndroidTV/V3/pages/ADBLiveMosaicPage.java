@@ -1,19 +1,19 @@
 package AndroidTV.V3.pages;
 
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 
 /**
  * Page Object for the Live Mosaic screen (after successful login).
  */
 public class ADBLiveMosaicPage {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
 
-    public ADBLiveMosaicPage(ADBDeviceController device, ADBXmlParser parser, String xmlFolderPath, String testStartTime) {
+    public ADBLiveMosaicPage(DeviceController device, XmlParser parser, String xmlFolderPath, String testStartTime) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;

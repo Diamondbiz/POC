@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Parses raw XML from uiautomator dump to find elements and extract text.
  */
-public class ADBXmlParser {
+public class XmlParser {
 
     /**
      * Checks if the XML contains a specific resource ID.

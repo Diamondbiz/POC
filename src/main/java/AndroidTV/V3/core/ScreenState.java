@@ -4,19 +4,19 @@ package AndroidTV.V3.core;
  * Read-only screen state detector.
  * Answers "where is the device right now?" — never performs side effects.
  */
-public class ADBScreenState {
+public class ScreenState {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
     private final String appPackage;
 
-    public ADBScreenState(ADBDeviceController device,
-                          ADBXmlParser parser,
-                          String xmlFolderPath,
-                          String testStartTime,
-                          String appPackage) {
+    public ScreenState(DeviceController device,
+                       XmlParser parser,
+                       String xmlFolderPath,
+                       String testStartTime,
+                       String appPackage) {
         this.device = device;
         this.parser = parser;
         this.xmlFolderPath = xmlFolderPath;

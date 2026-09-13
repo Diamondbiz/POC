@@ -1,8 +1,8 @@
 package AndroidTV.V3.services;
 
 import AndroidTV.V3.config.ADBTestConfig;
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.ADBLoginFlow;
 import AndroidTV.V3.pages.ADBOTPPage;
 
@@ -14,9 +14,9 @@ import java.util.Map;
  */
 public class ADBOTPService {
 
-    private final ADBDeviceController device;
+    private final DeviceController device;
     private final ADBOTPPage otpPage;
-    private final ADBXmlParser parser;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
 
@@ -44,11 +44,11 @@ public class ADBOTPService {
     }
 
     public ADBOTPService(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
-        this.device = new ADBDeviceController(deviceUDID);
+        this.device = new DeviceController(deviceUDID);
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;
 
-        this.parser = new ADBXmlParser();
+        this.parser = new XmlParser();
 
         String perSessionFolder = ADBTestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
         KeypadStateService keypadStateService = new KeypadStateService(

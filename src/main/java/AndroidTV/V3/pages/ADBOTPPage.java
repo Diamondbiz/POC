@@ -1,7 +1,7 @@
 package AndroidTV.V3.pages;
 
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.services.KeypadStateService;
 import AndroidTV.V3.utils.TestLogger;
 
@@ -12,14 +12,14 @@ import java.util.Map;
  */
 public class ADBOTPPage {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String testStartTime;
     private final KeypadStateService keypadStateService;
 
-    public ADBOTPPage(ADBDeviceController device,
-                      ADBXmlParser parser,
+    public ADBOTPPage(DeviceController device,
+                      XmlParser parser,
                       String xmlFolderPath,
                       String testStartTime,
                       KeypadStateService keypadStateService) {

@@ -1,8 +1,8 @@
 package AndroidTV.V3.flows;
 
 import AndroidTV.V3.config.ADBTestConfig;
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.pages.ADBLoginPage;
 import AndroidTV.V3.pages.ADBOTPPage;
 import AndroidTV.V3.services.KeypadStateService;
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class ADBLoginFlow {
 
-    private final ADBDeviceController device;
+    private final DeviceController device;
     private final ADBLoginPage loginPage;
     private final ADBOTPPage otpPage;
     private final String xmlFolderPath;
@@ -65,11 +65,11 @@ public class ADBLoginFlow {
     }
 
     public ADBLoginFlow(String deviceUDID, String xmlFolderPath, String testStartTime) throws Exception {
-        this.device = new ADBDeviceController(deviceUDID);
+        this.device = new DeviceController(deviceUDID);
         this.xmlFolderPath = xmlFolderPath;
         this.testStartTime = testStartTime;
 
-        ADBXmlParser parser = new ADBXmlParser();
+        XmlParser parser = new XmlParser();
 
         String perSessionFolder = ADBTestConfig.CURRENT_SCREEN_DIR + "/Keypad digits state_" + testStartTime;
         KeypadStateService keypadStateService = new KeypadStateService(

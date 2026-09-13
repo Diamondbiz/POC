@@ -1,7 +1,7 @@
 package AndroidTV.V3.utils;
 
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.profiles.ADBScreenProfile;
 import AndroidTV.V3.validators.ADBScreenAssertionResult;
 import AndroidTV.V3.validators.ADBScreenValidator;
@@ -32,14 +32,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class AssertionRunner {
 
-    private final ADBDeviceController device;
-    private final ADBXmlParser parser;
+    private final DeviceController device;
+    private final XmlParser parser;
     private final String xmlFolderPath;
     private final String logsFolderPath;
     private final String testStartTime;
 
-    public AssertionRunner(ADBDeviceController device,
-                           ADBXmlParser parser,
+    public AssertionRunner(DeviceController device,
+                           XmlParser parser,
                            String xmlFolderPath,
                            String logsFolderPath,
                            String testStartTime) {

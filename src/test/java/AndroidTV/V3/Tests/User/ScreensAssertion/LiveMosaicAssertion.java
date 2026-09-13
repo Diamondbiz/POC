@@ -1,9 +1,9 @@
 package AndroidTV.V3.Tests.User.ScreensAssertion;
 
 import AndroidTV.V3.config.ADBTestConfig;
-import AndroidTV.V3.core.ADBDeviceController;
-import AndroidTV.V3.core.ADBScreenState;
-import AndroidTV.V3.core.ADBXmlParser;
+import AndroidTV.V3.core.DeviceController;
+import AndroidTV.V3.core.ScreenState;
+import AndroidTV.V3.core.XmlParser;
 import AndroidTV.V3.flows.ADBLoginFlow;
 import AndroidTV.V3.flows.ADBPreconditions;
 import AndroidTV.V3.profiles.ADBLiveMosaicScreenProfile;
@@ -34,11 +34,11 @@ public class LiveMosaicAssertion {
             TestLogger.log("═══════════════════════════════════════════════════");
 
             TestLogger.logStep("1", "Connecting to device");
-            ADBDeviceController device = new ADBDeviceController(ADBTestConfig.DEVICE_UDID);
+            DeviceController device = new DeviceController(ADBTestConfig.DEVICE_UDID);
             device.connect();
 
-            ADBXmlParser parser = new ADBXmlParser();
-            ADBScreenState state = new ADBScreenState(
+            XmlParser parser = new XmlParser();
+            ScreenState state = new ScreenState(
                     device, parser,
                     ADBTestConfig.XML_DIR, testStartTime,
                     ADBTestConfig.HOT_PACKAGE);
