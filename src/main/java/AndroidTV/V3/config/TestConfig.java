@@ -17,7 +17,7 @@ public final class TestConfig {
     }
 
     // ==================== DEVICE ====================
-    public static final String DEVICE_UDID = "192.168.1.165:5555";
+    public static final String DEVICE_UDID = "192.168.1.10:5555";
     public static final String HOT_PACKAGE = "il.net.hot.hot";
 
     // ==================== TIMEOUTS (ms) ====================
@@ -32,7 +32,7 @@ public final class TestConfig {
     public static final int DEFAULT_WAIT = 1000;
 
     // ==================== TEST DATA ====================
-    public static final String REGULAR_PHONE_NUMBER = "0543501323";
+    public static final String REGULAR_PHONE_NUMBER = "0522522306";
     public static final String REGULAR_OTP = "123456";
 
     // ==================== PROJECT ROOT & DERIVED PATHS ====================

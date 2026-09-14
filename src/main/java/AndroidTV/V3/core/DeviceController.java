@@ -223,4 +223,17 @@ public class DeviceController {
         }
         return false;
     }
+
+    // ==================== APP DATA ====================
+
+    /**
+     * Clears all app data via "pm clear" — wipes preferences, cached credentials,
+     * session tokens, etc. Effectively logs the user out and resets the app.
+     * Also force-stops the app as a side effect.
+     */
+    public void clearAppData(String packageName) throws Exception {
+        runCommand("adb", "-s", deviceUDID, "shell", "pm", "clear", packageName);
+        System.out.println("🧹 Cleared app data: " + packageName);
+    }
+
 }
